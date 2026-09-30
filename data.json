@@ -1,0 +1,51 @@
+{
+  "Tools": [
+    ["IT - Freshworks", "https://sliceit.freshservice.com/support/home"],
+    ["Slack", "https://app.slack.com/client/T2FGE2LQM/C0BN7LKCAR5"],
+    ["Darwin", "https://slice.darwinbox.in/ms/db/home"],
+    ["Prod Spacce", "https://prod.cx.spacce.app/login"],
+    ["Beta Spacce", "https://beta-api.nebank.com/non-banking/spacce-cx/chats/live-chat"],
+    ["Spacce Onboarding", "https://api.nebank.com/banking/spacce-onboarding/v1/login"],
+    ["Freshdesk", "https://slice.freshdesk.com/a/dashboard/default"],
+    ["Orbit Borrow", "https://borrow.orbits.work/home"],
+    ["Outlook", "https://outlook.cloud.microsoft/mail/"],
+    ["Ameyo", "https://garagepreneursapp.ameyoemerge.in:8443/app/?campaign=10#!home"],
+    ["M365 Apps", "https://m365.cloud.microsoft/apps?origindomain=Office"],
+    ["Osfin", "https://slice.osfin.ai/disputes/upi/NES/chargeback"]
+  ],
+  "Forms & Trackers": [
+    ["Service and Action", "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhPHbzYMO9hIj2CZp9fV3HpUQ0tDS0M2VFBYU0hCMU5DVDZTN043RVI3UC4u"],
+    ["Passbook Tracker", "https://slicebank-my.sharepoint.com/:x:/r/personal/prashant_kumar_slicebank_com/_layouts/15/guestaccess.aspx?e=CeHDar&share=EUASSo_JtyFJtwgjEUKb6YoBeM_hIEFj7V9m4oPeejW21g"],
+    ["Chargeback - Domestic", "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDv-ndRSAnRNDgfsAIZt1xO1UQlVUOTI4SU4wVTNNSVlGNjRTSkhVRE9YWS4u"],
+    ["Chargeback - Domestic Response Sheet", "https://slicebank-my.sharepoint.com/:x:/p/mohammed_aslam/IQANgCIjZfNoQZSVtcroJCtpAZaB7WOgpAaOnGbbvTOmAoA?e=GqXPaS"],
+    ["Chargeback - International", "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhv8yOlw3wVLm9ebjVNbSbBUQlExWUwxQ09YOUE5N0VTRkhPNlM3UExKUC4u"],
+    ["Chargeback - International Response Sheet", "https://slicebank-my.sharepoint.com/personal/shruthi_pl_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7B7BB66A42-055F-44D7-BF0F-B92DCC06AE45%7D&file=Rupay%20International%20Disputes.xlsx&action=default&mobileredirect=true"],
+    ["Cheque Book Tracker", "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/guestaccess.aspx?e=tq4nxa&share=EaZNJ0ys4mVJoTJUJHa9BFABnS7rwiOeARiaBbAbgsFuLQ"],
+    ["Debit Card Tracker", "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/guestaccess.aspx?e=fakVrg&share=EbJLhFU2gExIjfMU4KsJ6gEBsLVBc4-s78JNHjAh5ABrDw"],
+    ["CC Billing Cycle Change Form", "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDmlqAvJBQ9FHjWMEJYLoomZUOTdIRExRWUFMTjRPQVc5Q1RLT0dJU1ZUSy4u"],
+    ["CC Billing Cycle Change Response Sheet", "https://slicebank-my.sharepoint.com/:x:/p/lokesh_v/IQCkoNFnAUDaRrWFUpCP3pA-AQzrHQu8s6klUgxPSgHyOxg?e=ScU14R"],
+    ["Potential RBI Cases", "https://slicebank.sharepoint.com/:x:/s/slice-SharedDrives/IQAfZYdwtIo8TZ3mF2H78JUmAWYT4vVZZkm3m9XLT6irsKk?e=Gkgp2Q"],
+    ["Delivery Issue Tracker", "https://forms.cloud.microsoft/pages/responsepage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDsoc56SK7zNKjeiJpOME7MxURUVMSFYyT1dJVzZXMlg5U1pFRThDRDI1US4u&route=shorturl"],
+    ["UPI CC Disputes", "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhvFwIafIvlCo4TyW9xLGEdUOUI0VTFRUTJaWTJLQTROQkNaNEZXQjVFMy4u"],
+    ["UPI CC Disputes Response Sheet", "https://slicebank-my.sharepoint.com/:x:/r/personal/singanamala_sarankumar_slicebank_com/_layouts/15/guestaccess.aspx?e=2ap5Eh&share=EacqT8Cs6w1OmsSwtOvXOd8BcqYTSG656hjKJtIna6anbw"],
+    ["UPI CL Disputes", "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhvFwIafIvlCo4TyW9xLGEdUQkdRWDFBMkJTNkY4SE9MM0NSV0JSVFdYMy4u"],
+    ["UPI CL Disputes Response Sheet", "https://slicebank-my.sharepoint.com/personal/shruthi_pl_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7B7BB66A42-055F-44D7-BF0F-B92DCC06AE45%7D&file=Rupay%20International%20Disputes.xlsx&action=default&mobileredirect=true"],
+    ["Borrow Waiver - September 2026", "https://slicebank-my.sharepoint.com/:x:/p/lokesh_v/IQCCqVGbvE7cTIAPxvZ2KsZwAeW4cf5Gw5JNSXvPek5Usig?e=IjvleR"]
+  ],
+  "Guides & SOPs": [
+    ["DSA - Onboarding PPT", "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQAYQwG5iiJ0S5lwg77FWKLsAeTTNdfObjoaUGMbgMMEJRo?e=595cNr"],
+    ["DSA - Onboarding SOP", "https://slicebank-my.sharepoint.com/:o:/r/personal/vinisha_a_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7B7b03a943-c0b3-4606-bf56-c01049e2e328%7D&action=view"],
+    ["Credit Card - PPT", "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQAm9-FOBiCyQ4_eFbWEm1kYATVsFErfccm7Y5x7ryTFUYw?e=JPDabk"],
+    ["Credit Card - SOP", "https://slicebank-my.sharepoint.com/:o:/r/personal/vinisha_a_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7Ba66e61bc-680a-4979-a03d-98d0a85a076c%7D&action=view"],
+    ["Borrow - PPT / SOP", "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQCDGbOokymQSZdsGXXE4a7BASu66FoZjmQCv7ZT_9fbfv4?e=e4wRKn"],
+    ["SPARKS", "https://help.slice.bank.in/support/solutions/articles/84000398924"],
+    ["MITC", "https://slice.bank.in/cc-mitc/"],
+    ["DSA - Interest & Charges", "https://slice.bank.in/rates-and-pricing"],
+    ["RCA Sheet", "https://slicebank-my.sharepoint.com/:x:/r/personal/amit_chowdhury_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7Bde517258-ca18-4713-9ecc-d06945b7cb04%7D&action=edit"],
+    ["L2 Call Closure Templates", "https://slicebank-my.sharepoint.com/:w:/p/prashant_kumar/IQBOHF5ZfQeAQ4iZXydfzjY0AdhrAmeSSHg0yr_TdCSqzL4?e=GLCw5w"],
+    ["CC Rejection Repository", "https://slicebank-my.sharepoint.com/:x:/r/personal/lokesh_v_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7Ba775636c-7acd-4638-a14b-14babbfd62ee%7D&action=view"],
+    ["TAT Sheet", "https://slicebank-my.sharepoint.com/:x:/p/vinisha_a/IQDPXyO3egbjRZFd0R1SkSP0AaajFdBJ8_eXeLBUVO1JtLI?e=ezOzN8"],
+    ["IT SIT DSA Repository", "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/doc2.aspx?sourcedoc=%7B728a4db6-fa73-4c66-a2d4-824b36b69b9b%7D&action=view"],
+    ["Branch List", "https://www.branchlist.in/banks/slice-small-finance-bank-limited"]
+  ]
+}
