@@ -10,6 +10,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // which works fine to start but gets reset every time you redeploy on Render's
 // free tier. See README.md for how to point this at a persistent disk later.
 const DATA_FILE = process.env.DATA_FILE || path.join(__dirname, 'data.json');
+const STATS_FILE = process.env.STATS_FILE || path.join(__dirname, 'stats.json');
 
 // The password people need to add/remove links. Set this as an environment
 // variable in Render (never hard-code your real password here).
@@ -24,6 +25,19 @@ function writeData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
+function readStats() {
+  if (!fs.existsSync(STATS_FILE)) return { dailyViews: {}, linkClicks: {} };
+  return JSON.parse(fs.readFileSync(STATS_FILE, 'utf8'));
+}
+
+function writeStats(stats) {
+  fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2));
+}
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
 // Anyone can read the links.
 app.get('/api/links', (req, res) => {
   res.json(readData());
@@ -33,6 +47,24 @@ app.get('/api/links', (req, res) => {
 app.post('/api/verify', (req, res) => {
   const { password } = req.body || {};
   res.json({ ok: password === EDIT_PASSWORD });
+});
+
+// Anyone's browser can send these — used to silently count visits/clicks.
+// No personal data is stored, just counts.
+app.post('/api/track', (req, res) => {
+  const { type, category, name } = req.body || {};
+  const stats = readStats();
+  if (type === 'pageview') {
+    const key = todayKey();
+    stats.dailyViews[key] = (stats.dailyViews[key] || 0) + 1;
+  } else if (type === 'click' && category && name) {
+    const key = `${category} — ${name}`;
+    stats.linkClicks[key] = (stats.linkClicks[key] || 0) + 1;
+  } else {
+    return res.status(400).json({ error: 'Invalid tracking payload' });
+  }
+  writeStats(stats);
+  res.json({ ok: true });
 });
 
 function requirePassword(req, res, next) {
@@ -50,7 +82,7 @@ app.post('/api/links', requirePassword, (req, res) => {
   }
   const data = readData();
   if (!data[category]) data[category] = [];
-  data[category].push([name, url]);
+  data[category].push([name, url, new Date().toISOString()]);
   writeData(data);
   res.json({ ok: true, data });
 });
@@ -64,6 +96,11 @@ app.delete('/api/links', requirePassword, (req, res) => {
   }
   writeData(data);
   res.json({ ok: true, data });
+});
+
+// Only people with the edit password can see usage stats.
+app.get('/api/stats', requirePassword, (req, res) => {
+  res.json(readStats());
 });
 
 const PORT = process.env.PORT || 3000;

@@ -45,5 +45,13 @@ can view it; only people who know the **edit password** can add or remove links.
 - **Data resets on redeploy**: Links added through the app are saved to `data.json` on Render's server, but if you push a code update (redeploy), that file resets back to whatever is in your GitHub repo. For a small internal tool with infrequent updates this is usually fine, but it's worth knowing.
   - If this becomes a problem, the fix is to add a **Render persistent disk** (a small paid add-on, roughly $1/month) mounted at, say, `/data`, and set the `DATA_FILE` environment variable to `/data/data.json`. The app already reads this from an environment variable, so no code changes are needed — just add the disk and the env var in Render's dashboard.
 
+## Activity Center (usage stats)
+Once edit access is unlocked (same password as adding links), a second button
+appears — **📊 Activity** — showing total page views, total link clicks, a
+14-day views chart, and the most-clicked links. Regular viewers never see this
+button or its data. Stats are stored in `stats.json` on the server (separate
+from your links data), and reset if the server's disk is wiped — same
+persistence caveat as `data.json` above.
+
 ## Making changes later
 Any time you want to change the code (design, features, etc.), update the files in your GitHub repo — Render automatically redeploys when it sees new changes pushed to the connected branch.
