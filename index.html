@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CX Hub</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f3edfb; --card-bg: #ffffff; --text: #251b3d; --text-muted: #7a6f96;
+    --accent: #7c5cfc; --accent-soft: #e9e0ff; --border: #e2d6f7; --danger: #e0524d;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; padding: 16px 20px 14px; background: var(--bg);
+    border-bottom: 1px solid var(--border); z-index: 10; }
+  h1 { font-size: 1.3rem; margin: 4px 0 12px; }
+  .search-wrap { margin-bottom: 12px; }
+  #search { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--card-bg); color: var(--text); font-size: 0.95rem; }
+  .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+  .tab { flex: none; padding: 7px 14px; border-radius: 999px; font-size: 0.85rem;
+    background: var(--card-bg); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; white-space: nowrap; }
+  .tab.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+  main { max-width: 720px; margin: 0 auto; padding: 16px 20px 100px; }
+  .group { margin-bottom: 26px; }
+  .group-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin: 0 0 10px 2px; }
+  .item-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  a.item { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 13px 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    text-decoration: none; color: var(--text); min-width: 0; }
+  a.item:hover { border-color: var(--accent); }
+  .item-name { font-size: 0.95rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+  .item-text { min-width: 0; overflow: hidden; }
+  .del-btn { flex: none; width: 40px; border: 1px solid var(--border); background: var(--card-bg);
+    color: var(--text-muted); border-radius: 10px; cursor: pointer; }
+  .del-btn:hover { color: var(--danger); border-color: var(--danger); }
+  .empty { color: var(--text-muted); text-align: center; padding: 40px 0; font-size: 0.9rem; }
+  .fab { position: fixed; right: 20px; bottom: 20px; background: var(--accent); color: white; border: none;
+    border-radius: 999px; padding: 14px 20px; font-weight: 600; box-shadow: 0 6px 18px rgba(108,75,244,0.35); cursor: pointer; }
+  .fab-secondary { bottom: 76px; background: var(--card-bg); color: var(--accent); border: 1px solid var(--accent); }
+  .unlock-link { display: block; text-align: center; margin-top: 30px; font-size: 0.8rem; color: var(--text-muted);
+    cursor: pointer; text-decoration: underline; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none;
+    align-items: flex-end; justify-content: center; z-index: 30; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--card-bg); width: 100%; max-width: 480px; border-radius: 16px 16px 0 0;
+    padding: 20px; border: 1px solid var(--border); border-bottom: none; }
+  .modal h2 { margin: 0 0 14px; font-size: 1.05rem; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
+  .field input, .field select { width: 100%; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); font-size: 0.92rem; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .btn { flex: 1; padding: 11px; border-radius: 10px; border: 1px solid var(--border); font-weight: 600; cursor: pointer;
+    background: var(--card-bg); color: var(--text); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 10px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>CX Hub</h1>
+  <div class="search-wrap"><input id="search" type="text" placeholder="Search tools, forms, guides…"></div>
+  <div class="tabs" id="tabs"></div>
+</header>
+<main id="main"></main>
+<div id="unlock-wrap"><div class="unlock-link" id="unlock-link">🔒 Enable edit access</div></div>
+<button class="fab" id="add-link-btn" style="display:none">+ Add link</button>
+<button class="fab fab-secondary" id="activity-btn" style="display:none">📊 Activity</button>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h2>Add a link</h2>
+    <div class="field"><label>Name</label><input id="f-name" type="text" placeholder="e.g. New Chargeback Form"></div>
+    <div class="field"><label>Link</label><input id="f-url" type="text" placeholder="https://…"></div>
+    <div class="field"><label>Category</label><select id="f-cat"></select></div>
+    <div class="field" id="f-newcat-wrap" style="display:none">
+      <label>New category name</label><input id="f-newcat" type="text" placeholder="e.g. Escalations">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="save-btn">Save</button>
+    </div>
+    <div class="hint" id="modal-hint"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="activity-overlay">
+  <div class="modal" style="max-width:600px">
+    <h2>📊 Activity Center</h2>
+    <div class="hint" style="margin-bottom:14px">Visible only to you and anyone with edit access — not shown to regular viewers.</div>
+    <div id="activity-summary" style="display:flex; gap:16px; margin-bottom:18px;"></div>
+    <canvas id="views-chart" height="140"></canvas>
+    <div class="group-title" style="margin-top:20px">Link open counts</div>
+    <div id="top-links" style="max-height:220px; overflow-y:auto;"></div>
+    <div class="group-title" style="margin-top:20px">🗑️ Removed links</div>
+    <div id="removed-links" style="max-height:220px; overflow-y:auto;"></div>
+    <div class="modal-actions">
+      <button class="btn" id="activity-close-btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let DATA = {};
+let activeTab = "All";
+let editPassword = sessionStorage.getItem('cxhub_pw') || null;
+
+const tabsEl = document.getElementById('tabs');
+const mainEl = document.getElementById('main');
+const searchEl = document.getElementById('search');
+const addBtn = document.getElementById('add-link-btn');
+const overlay = document.getElementById('modal-overlay');
+const catSelect = document.getElementById('f-cat');
+const newCatWrap = document.getElementById('f-newcat-wrap');
+const modalHint = document.getElementById('modal-hint');
+const unlockLink = document.getElementById('unlock-link');
+const activityBtn = document.getElementById('activity-btn');
+const activityOverlay = document.getElementById('activity-overlay');
+let viewsChart = null;
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function categories() { return Object.keys(DATA); }
+
+function formatDate(iso) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d)) return null;
+  return 'Updated ' + d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function renderTabs() {
+  const all = ["All", ...categories()];
+  tabsEl.innerHTML = all.map(c =>
+    `<div class="tab${c === activeTab ? ' active' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</div>`).join('');
+  tabsEl.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => { activeTab = t.dataset.cat; renderTabs(); renderList(); });
+  });
+}
+
+function renderList() {
+  const q = searchEl.value.trim().toLowerCase();
+  const cats = activeTab === "All" ? categories() : [activeTab];
+  let html = '', totalShown = 0;
+  cats.forEach(cat => {
+    const items = (DATA[cat] || []).filter(([name]) => name.toLowerCase().includes(q));
+    if (!items.length) return;
+    totalShown += items.length;
+    html += `<div class="group"><div class="group-title">${escapeHtml(cat)}</div>`;
+    items.forEach(([name, url, updatedAt]) => {
+      const dateLabel = formatDate(updatedAt);
+      html += `<div class="item-row">
+        <a class="item" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"
+           data-track-cat="${escapeHtml(cat)}" data-track-name="${escapeHtml(name)}">
+          <span class="item-text">
+            <span class="item-name">${escapeHtml(name)}</span>
+            ${dateLabel ? `<div class="item-date">${dateLabel}</div>` : ''}
+          </span>
+          <span>↗</span>
+        </a>
+        ${editPassword ? `<button class="del-btn" data-cat="${escapeHtml(cat)}" data-name="${escapeHtml(name)}">✕</button>` : ''}
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  mainEl.innerHTML = totalShown ? html : `<div class="empty">No matches for "${escapeHtml(q)}"</div>`;
+  mainEl.querySelectorAll('.del-btn').forEach(btn => {
+    btn.addEventListener('click', () => removeLink(btn.dataset.cat, btn.dataset.name));
+  });
+  mainEl.querySelectorAll('a.item').forEach(a => {
+    a.addEventListener('click', () => {
+      fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'click', category: a.dataset.trackCat, name: a.dataset.trackName })
+      }).catch(() => {});
+    });
+  });
+}
+
+function updateEditUI() {
+  addBtn.style.display = editPassword ? 'block' : 'none';
+  activityBtn.style.display = editPassword ? 'block' : 'none';
+  unlockLink.textContent = editPassword ? '🔓 Edit access enabled' : '🔒 Enable edit access';
+}
+
+unlockLink.addEventListener('click', async () => {
+  if (editPassword) return;
+  const pw = prompt('Enter the edit password:');
+  if (!pw) return;
+  const res = await fetch('/api/verify', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ password: pw }) });
+  const result = await res.json();
+  if (result.ok) {
+    editPassword = pw;
+    sessionStorage.setItem('cxhub_pw', pw);
+    updateEditUI();
+    renderList();
+  } else {
+    alert('Incorrect password.');
+  }
+});
+
+function populateCategorySelect() {
+  catSelect.innerHTML = categories().map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')
+    + `<option value="__new__">+ New category…</option>`;
+}
+catSelect?.addEventListener('change', () => { newCatWrap.style.display = catSelect.value === '__new__' ? 'block' : 'none'; });
+
+function openModal() {
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-url').value = '';
+  document.getElementById('f-newcat').value = '';
+  newCatWrap.style.display = 'none';
+  populateCategorySelect();
+  modalHint.textContent = '';
+  overlay.classList.add('open');
+}
+function closeModal() { overlay.classList.remove('open'); }
+
+async function saveLink() {
+  const name = document.getElementById('f-name').value.trim();
+  const url = document.getElementById('f-url').value.trim();
+  let category = catSelect.value;
+  if (category === '__new__') category = document.getElementById('f-newcat').value.trim();
+  if (!name || !url || !category) { modalHint.textContent = 'Please fill in all fields.'; return; }
+  if (!/^https?:\/\//i.test(url)) { modalHint.textContent = 'Link should start with http:// or https://'; return; }
+
+  const res = await fetch('/api/links', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword },
+    body: JSON.stringify({ category, name, url })
+  });
+  if (res.status === 401) { alert('Edit access expired — please re-enter the password.'); editPassword = null; sessionStorage.removeItem('cxhub_pw'); updateEditUI(); closeModal(); return; }
+  const result = await res.json();
+  DATA = result.data;
+  closeModal();
+  renderTabs();
+  renderList();
+}
+
+async function removeLink(category, name) {
+  const res = await fetch('/api/links', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword },
+    body: JSON.stringify({ category, name })
+  });
+  if (res.status === 401) { alert('Edit access expired — please re-enter the password.'); editPassword = null; sessionStorage.removeItem('cxhub_pw'); updateEditUI(); return; }
+  const result = await res.json();
+  DATA = result.data;
+  if (activeTab !== 'All' && !DATA[activeTab]) activeTab = 'All';
+  renderTabs();
+  renderList();
+}
+
+async function openActivityCenter() {
+  const res = await fetch('/api/stats', { headers: { 'x-edit-password': editPassword } });
+  if (res.status === 401) { alert('Edit access expired — please re-enter the password.'); editPassword = null; sessionStorage.removeItem('cxhub_pw'); updateEditUI(); return; }
+  const stats = await res.json();
+
+  const totalViews = Object.values(stats.dailyViews || {}).reduce((a, b) => a + b, 0);
+  const totalClicks = Object.values(stats.linkClicks || {}).reduce((a, b) => a + b, 0);
+  document.getElementById('activity-summary').innerHTML = `
+    <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${totalViews}</div>
+      <div style="font-size:0.78rem; color:var(--text-muted)">Total page views</div>
+    </div>
+    <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${totalClicks}</div>
+      <div style="font-size:0.78rem; color:var(--text-muted)">Total link clicks</div>
+    </div>`;
+
+  // Last 14 days of views, oldest to newest
+  const days = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+  const viewCounts = days.map(d => (stats.dailyViews || {})[d] || 0);
+  const labels = days.map(d => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
+
+  const ctx = document.getElementById('views-chart').getContext('2d');
+  if (viewsChart) viewsChart.destroy();
+  viewsChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Page views', data: viewCounts, backgroundColor: '#7c5cfc' }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  const topLinks = Object.entries(stats.linkClicks || {}).sort((a, b) => b[1] - a[1]);
+  document.getElementById('top-links').innerHTML = topLinks.length
+    ? topLinks.map(([name, count]) => `
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:0.88rem;">
+          <span>${escapeHtml(name)}</span><span style="color:var(--accent); font-weight:600">${count} open${count === 1 ? '' : 's'}</span>
+        </div>`).join('')
+    : `<div class="hint">No clicks recorded yet.</div>`;
+
+  const deletedLinks = stats.deletedLinks || [];
+  document.getElementById('removed-links').innerHTML = deletedLinks.length
+    ? deletedLinks.map(d => `
+        <div style="padding:8px 0; border-bottom:1px solid var(--border); font-size:0.85rem;">
+          <div style="font-weight:600">${escapeHtml(d.name)} <span style="font-weight:400; color:var(--text-muted)">(${escapeHtml(d.category)})</span></div>
+          <div style="font-size:0.76rem; color:var(--text-muted); word-break:break-all;">${escapeHtml(d.url)}</div>
+          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Removed ${new Date(d.deletedAt).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' })}</div>
+        </div>`).join('')
+    : `<div class="hint">No links have been removed yet.</div>`;
+
+  activityOverlay.classList.add('open');
+}
+
+searchEl.addEventListener('input', renderList);
+addBtn.addEventListener('click', openModal);
+document.getElementById('cancel-btn').addEventListener('click', closeModal);
+document.getElementById('save-btn').addEventListener('click', saveLink);
+overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+activityBtn.addEventListener('click', openActivityCenter);
+document.getElementById('activity-close-btn').addEventListener('click', () => activityOverlay.classList.remove('open'));
+activityOverlay.addEventListener('click', (e) => { if (e.target === activityOverlay) activityOverlay.classList.remove('open'); });
+
+(async () => {
+  const res = await fetch('/api/links');
+  DATA = await res.json();
+  updateEditUI();
+  renderTabs();
+  renderList();
+  fetch('/api/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'pageview' })
+  }).catch(() => {});
+})();
+</script>
+</body>
+</html>

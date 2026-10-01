@@ -26,8 +26,10 @@ function writeData(data) {
 }
 
 function readStats() {
-  if (!fs.existsSync(STATS_FILE)) return { dailyViews: {}, linkClicks: {} };
-  return JSON.parse(fs.readFileSync(STATS_FILE, 'utf8'));
+  if (!fs.existsSync(STATS_FILE)) return { dailyViews: {}, linkClicks: {}, deletedLinks: [] };
+  const stats = JSON.parse(fs.readFileSync(STATS_FILE, 'utf8'));
+  if (!stats.deletedLinks) stats.deletedLinks = [];
+  return stats;
 }
 
 function writeStats(stats) {
@@ -91,6 +93,17 @@ app.delete('/api/links', requirePassword, (req, res) => {
   const { category, name } = req.body || {};
   const data = readData();
   if (data[category]) {
+    const removed = data[category].find(([n]) => n === name);
+    if (removed) {
+      const stats = readStats();
+      stats.deletedLinks.unshift({
+        category,
+        name: removed[0],
+        url: removed[1],
+        deletedAt: new Date().toISOString()
+      });
+      writeStats(stats);
+    }
     data[category] = data[category].filter(([n]) => n !== name);
     if (!data[category].length) delete data[category];
   }
