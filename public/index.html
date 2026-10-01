@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CX Hub</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
   :root {
     --bg: #f3edfb; --card-bg: #ffffff; --text: #251b3d; --text-muted: #7a6f96;
@@ -31,12 +32,15 @@
     text-decoration: none; color: var(--text); min-width: 0; }
   a.item:hover { border-color: var(--accent); }
   .item-name { font-size: 0.95rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+  .item-text { min-width: 0; overflow: hidden; }
   .del-btn { flex: none; width: 40px; border: 1px solid var(--border); background: var(--card-bg);
     color: var(--text-muted); border-radius: 10px; cursor: pointer; }
   .del-btn:hover { color: var(--danger); border-color: var(--danger); }
   .empty { color: var(--text-muted); text-align: center; padding: 40px 0; font-size: 0.9rem; }
   .fab { position: fixed; right: 20px; bottom: 20px; background: var(--accent); color: white; border: none;
     border-radius: 999px; padding: 14px 20px; font-weight: 600; box-shadow: 0 6px 18px rgba(108,75,244,0.35); cursor: pointer; }
+  .fab-secondary { bottom: 76px; background: var(--card-bg); color: var(--accent); border: 1px solid var(--accent); }
   .unlock-link { display: block; text-align: center; margin-top: 30px; font-size: 0.8rem; color: var(--text-muted);
     cursor: pointer; text-decoration: underline; }
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none;
@@ -65,6 +69,7 @@
 <main id="main"></main>
 <div id="unlock-wrap"><div class="unlock-link" id="unlock-link">🔒 Enable edit access</div></div>
 <button class="fab" id="add-link-btn" style="display:none">+ Add link</button>
+<button class="fab fab-secondary" id="activity-btn" style="display:none">📊 Activity</button>
 
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
@@ -83,6 +88,20 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="activity-overlay">
+  <div class="modal" style="max-width:600px">
+    <h2>📊 Activity Center</h2>
+    <div class="hint" style="margin-bottom:14px">Visible only to you and anyone with edit access — not shown to regular viewers.</div>
+    <div id="activity-summary" style="display:flex; gap:16px; margin-bottom:18px;"></div>
+    <canvas id="views-chart" height="140"></canvas>
+    <div class="group-title" style="margin-top:20px">Most clicked links</div>
+    <div id="top-links"></div>
+    <div class="modal-actions">
+      <button class="btn" id="activity-close-btn">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 let DATA = {};
 let activeTab = "All";
@@ -97,12 +116,22 @@ const catSelect = document.getElementById('f-cat');
 const newCatWrap = document.getElementById('f-newcat-wrap');
 const modalHint = document.getElementById('modal-hint');
 const unlockLink = document.getElementById('unlock-link');
+const activityBtn = document.getElementById('activity-btn');
+const activityOverlay = document.getElementById('activity-overlay');
+let viewsChart = null;
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
 function categories() { return Object.keys(DATA); }
+
+function formatDate(iso) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d)) return null;
+  return 'Updated ' + d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
 
 function renderTabs() {
   const all = ["All", ...categories()];
@@ -122,10 +151,16 @@ function renderList() {
     if (!items.length) return;
     totalShown += items.length;
     html += `<div class="group"><div class="group-title">${escapeHtml(cat)}</div>`;
-    items.forEach(([name, url]) => {
+    items.forEach(([name, url, updatedAt]) => {
+      const dateLabel = formatDate(updatedAt);
       html += `<div class="item-row">
-        <a class="item" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
-          <span class="item-name">${escapeHtml(name)}</span><span>↗</span>
+        <a class="item" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"
+           data-track-cat="${escapeHtml(cat)}" data-track-name="${escapeHtml(name)}">
+          <span class="item-text">
+            <span class="item-name">${escapeHtml(name)}</span>
+            ${dateLabel ? `<div class="item-date">${dateLabel}</div>` : ''}
+          </span>
+          <span>↗</span>
         </a>
         ${editPassword ? `<button class="del-btn" data-cat="${escapeHtml(cat)}" data-name="${escapeHtml(name)}">✕</button>` : ''}
       </div>`;
@@ -136,10 +171,20 @@ function renderList() {
   mainEl.querySelectorAll('.del-btn').forEach(btn => {
     btn.addEventListener('click', () => removeLink(btn.dataset.cat, btn.dataset.name));
   });
+  mainEl.querySelectorAll('a.item').forEach(a => {
+    a.addEventListener('click', () => {
+      fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'click', category: a.dataset.trackCat, name: a.dataset.trackName })
+      }).catch(() => {});
+    });
+  });
 }
 
 function updateEditUI() {
   addBtn.style.display = editPassword ? 'block' : 'none';
+  activityBtn.style.display = editPassword ? 'block' : 'none';
   unlockLink.textContent = editPassword ? '🔓 Edit access enabled' : '🔒 Enable edit access';
 }
 
@@ -211,11 +256,60 @@ async function removeLink(category, name) {
   renderList();
 }
 
+async function openActivityCenter() {
+  const res = await fetch('/api/stats', { headers: { 'x-edit-password': editPassword } });
+  if (res.status === 401) { alert('Edit access expired — please re-enter the password.'); editPassword = null; sessionStorage.removeItem('cxhub_pw'); updateEditUI(); return; }
+  const stats = await res.json();
+
+  const totalViews = Object.values(stats.dailyViews || {}).reduce((a, b) => a + b, 0);
+  const totalClicks = Object.values(stats.linkClicks || {}).reduce((a, b) => a + b, 0);
+  document.getElementById('activity-summary').innerHTML = `
+    <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${totalViews}</div>
+      <div style="font-size:0.78rem; color:var(--text-muted)">Total page views</div>
+    </div>
+    <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${totalClicks}</div>
+      <div style="font-size:0.78rem; color:var(--text-muted)">Total link clicks</div>
+    </div>`;
+
+  // Last 14 days of views, oldest to newest
+  const days = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+  const viewCounts = days.map(d => (stats.dailyViews || {})[d] || 0);
+  const labels = days.map(d => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
+
+  const ctx = document.getElementById('views-chart').getContext('2d');
+  if (viewsChart) viewsChart.destroy();
+  viewsChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Page views', data: viewCounts, backgroundColor: '#7c5cfc' }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  const topLinks = Object.entries(stats.linkClicks || {}).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  document.getElementById('top-links').innerHTML = topLinks.length
+    ? topLinks.map(([name, count]) => `
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:0.88rem;">
+          <span>${escapeHtml(name)}</span><span style="color:var(--accent); font-weight:600">${count}</span>
+        </div>`).join('')
+    : `<div class="hint">No clicks recorded yet.</div>`;
+
+  activityOverlay.classList.add('open');
+}
+
 searchEl.addEventListener('input', renderList);
 addBtn.addEventListener('click', openModal);
 document.getElementById('cancel-btn').addEventListener('click', closeModal);
 document.getElementById('save-btn').addEventListener('click', saveLink);
 overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+activityBtn.addEventListener('click', openActivityCenter);
+document.getElementById('activity-close-btn').addEventListener('click', () => activityOverlay.classList.remove('open'));
+activityOverlay.addEventListener('click', (e) => { if (e.target === activityOverlay) activityOverlay.classList.remove('open'); });
 
 (async () => {
   const res = await fetch('/api/links');
@@ -223,6 +317,11 @@ overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(
   updateEditUI();
   renderTabs();
   renderList();
+  fetch('/api/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'pageview' })
+  }).catch(() => {});
 })();
 </script>
 </body>
