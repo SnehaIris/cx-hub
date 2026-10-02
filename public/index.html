@@ -11,47 +11,62 @@
     --accent: #7c5cfc; --accent-soft: #e9e0ff; --border: #e2d6f7; --danger: #e0524d;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  header { position: sticky; top: 0; padding: 16px 20px 14px; background: var(--bg);
-    border-bottom: 1px solid var(--border); z-index: 10; }
-  h1 { font-size: 1.3rem; margin: 4px 0 12px; }
-  .search-wrap { margin-bottom: 12px; }
-  #search { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border);
-    background: var(--card-bg); color: var(--text); font-size: 0.95rem; }
-  .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
-  .tab { flex: none; padding: 7px 14px; border-radius: 999px; font-size: 0.85rem;
-    background: var(--card-bg); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; white-space: nowrap; }
-  .tab.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); font-weight: 600; }
-  main { max-width: 720px; margin: 0 auto; padding: 16px 20px 100px; }
-  .group { margin-bottom: 26px; }
-  .group-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin: 0 0 10px 2px; }
-  .item-row { display: flex; gap: 8px; margin-bottom: 8px; }
-  a.item { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    padding: 13px 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
-    text-decoration: none; color: var(--text); min-width: 0; }
-  a.item:hover { border-color: var(--accent); }
-  .item-name { font-size: 0.95rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .item-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-  .item-text { min-width: 0; overflow: hidden; }
-  .del-btn { flex: none; width: 40px; border: 1px solid var(--border); background: var(--card-bg);
-    color: var(--text-muted); border-radius: 10px; cursor: pointer; }
-  .count-badge { flex: none; min-width: 40px; display: flex; align-items: center; justify-content: center;
-    font-size: 0.78rem; font-weight: 700; color: var(--accent); background: var(--accent-soft);
-    border-radius: 10px; padding: 0 8px; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; padding: 16px 20px 14px; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 10; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  h1 { font-size: 1.25rem; margin: 0; display: flex; align-items: center; gap: 10px; }
+  .brand-logo { height: 20px; width: auto; display: block; }
+  .back-btn { background: none; border: none; color: var(--accent); font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 0; margin-top: 10px; }
+  .editor-toggle { font-size: 0.78rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-muted); cursor: pointer; }
+  .editor-toggle.on { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+  main { max-width: 640px; margin: 0 auto; padding: 20px; padding-bottom: 180px; }
+
+  .icon { font-size: 1.4rem; flex: none; }
+  .icon-img { height: 1.3rem; width: 1.3rem; object-fit: contain; flex: none; }
+  .drag-handle { color: var(--text-muted); cursor: grab; font-size: 1.1rem; padding: 2px 4px; flex: none; }
+  .drag-handle:active { cursor: grabbing; }
+
+  .cat-list { display: flex; flex-direction: column; gap: 10px; }
+  .cat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px;
+    cursor: pointer; display: flex; align-items: center; gap: 12px; }
+  .cat-card:hover { border-color: var(--accent); }
+  .cat-card .label { font-size: 0.98rem; font-weight: 600; flex: 1; }
+  .cat-card .chev { color: var(--text-muted); flex: none; }
+  .cat-card.dragging { opacity: 0.4; }
+
+  #cat-search { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--card-bg); color: var(--text); font-size: 0.95rem; margin-bottom: 14px; }
+  .product-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 2px; }
+  .product-tab { flex: none; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px;
+    font-size: 0.85rem; background: var(--card-bg); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; white-space: nowrap; }
+  .product-tab.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+  .product-tab.dragging { opacity: 0.4; }
+
+  .item-list { display: flex; flex-direction: column; gap: 8px; }
+  .item-row { display: flex; align-items: center; gap: 8px; padding: 12px 14px; background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: 10px; font-size: 0.9rem; }
+  .item-row.dragging { opacity: 0.4; }
+  .item-row a.name { flex: 1; color: var(--text); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item-row a.name:hover { color: var(--accent); }
+  .product-chip { font-size: 0.68rem; color: var(--accent); background: var(--accent-soft); padding: 2px 7px; border-radius: 6px; flex: none; }
+  .count-badge { flex: none; min-width: 36px; text-align:center; font-size: 0.76rem; font-weight: 700; color: var(--accent);
+    background: var(--accent-soft); border-radius: 10px; padding: 3px 7px; }
+  .del-btn { flex: none; width: 34px; height: 34px; border: 1px solid var(--border); background: var(--card-bg);
+    color: var(--text-muted); border-radius: 8px; cursor: pointer; }
   .del-btn:hover { color: var(--danger); border-color: var(--danger); }
-  .empty { color: var(--text-muted); text-align: center; padding: 40px 0; font-size: 0.9rem; }
+
+  .empty { text-align: center; color: var(--text-muted); padding: 40px 0; font-size: 0.9rem; }
+
   .fab { position: fixed; right: 20px; bottom: 20px; background: var(--accent); color: white; border: none;
     border-radius: 999px; padding: 14px 20px; font-weight: 600; box-shadow: 0 6px 18px rgba(108,75,244,0.35); cursor: pointer; }
   .fab-secondary { bottom: 76px; background: var(--card-bg); color: var(--accent); border: 1px solid var(--accent); }
   .fab-tertiary { bottom: 132px; background: var(--card-bg); color: var(--danger); border: 1px solid var(--danger); }
-  .unlock-link { display: block; text-align: center; margin-top: 30px; font-size: 0.8rem; color: var(--text-muted);
-    cursor: pointer; text-decoration: underline; }
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none;
-    align-items: flex-end; justify-content: center; z-index: 30; }
+  .unlock-link { display: block; text-align: center; margin-top: 30px; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; text-decoration: underline; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: flex-end; justify-content: center; z-index: 30; }
   .modal-overlay.open { display: flex; }
-  .modal { background: var(--card-bg); width: 100%; max-width: 480px; border-radius: 16px 16px 0 0;
-    padding: 20px; border: 1px solid var(--border); border-bottom: none; }
+  .modal { background: var(--card-bg); width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto;
+    border-radius: 16px 16px 0 0; padding: 20px; border: 1px solid var(--border); border-bottom: none; }
   .modal h2 { margin: 0 0 14px; font-size: 1.05rem; }
   .field { margin-bottom: 12px; }
   .field label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
@@ -66,40 +81,43 @@
 </head>
 <body>
 <header>
-  <h1>CX Hub</h1>
-  <div class="search-wrap"><input id="search" type="text" placeholder="Search tools, forms, guides…"></div>
-  <div class="tabs" id="tabs"></div>
+  <div class="header-top">
+    <h1><img class="brand-logo" src="data:image/png;base64,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" alt="slice"><span id="page-title">CX Hub</span></h1>
+  </div>
+  <button class="back-btn" id="back-btn" style="display:none">← All categories</button>
 </header>
 <main id="main"></main>
-<div id="unlock-wrap"><div class="unlock-link" id="unlock-link">🔒 Enable edit access</div></div>
+
 <button class="fab" id="add-link-btn" style="display:none">+ Add link</button>
 <button class="fab fab-secondary" id="activity-btn" style="display:none">📊 Activity</button>
 <button class="fab fab-tertiary" id="removed-btn" style="display:none">🗑️ Removed</button>
 
-<div class="modal-overlay" id="modal-overlay">
+<!-- Add Link modal -->
+<div class="modal-overlay" id="add-overlay">
   <div class="modal">
     <h2>Add a link</h2>
     <div class="field"><label>Name</label><input id="f-name" type="text" placeholder="e.g. New Chargeback Form"></div>
     <div class="field"><label>Link</label><input id="f-url" type="text" placeholder="https://…"></div>
-    <div class="field"><label>Category</label><select id="f-cat"></select></div>
-    <div class="field" id="f-newcat-wrap" style="display:none">
-      <label>New category name</label><input id="f-newcat" type="text" placeholder="e.g. Escalations">
+    <div class="field" id="f-doctype-wrap" style="display:none">
+      <label>Document type</label>
+      <select id="f-doctype"></select>
     </div>
     <div class="modal-actions">
-      <button class="btn" id="cancel-btn">Cancel</button>
-      <button class="btn btn-primary" id="save-btn">Save</button>
+      <button class="btn" id="add-cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="add-save-btn">Save</button>
     </div>
-    <div class="hint" id="modal-hint"></div>
+    <div class="hint" id="add-hint"></div>
   </div>
 </div>
 
+<!-- Activity Center -->
 <div class="modal-overlay" id="activity-overlay">
   <div class="modal" style="max-width:600px">
     <h2>📊 Activity Center</h2>
-    <div class="hint" style="margin-bottom:14px">Visible only to you and anyone with edit access — not shown to regular viewers.</div>
+    <div class="hint" style="margin-bottom:14px">Visible only to you and anyone with edit access.</div>
     <div id="activity-summary" style="display:flex; gap:16px; margin-bottom:18px;"></div>
     <canvas id="views-chart" height="140"></canvas>
-    <div class="group-title" style="margin-top:20px">Link open counts</div>
+    <div class="hint" style="margin-top:20px; font-weight:600; color:var(--text)">Link open counts</div>
     <div id="top-links" style="max-height:220px; overflow-y:auto;"></div>
     <div class="modal-actions">
       <button class="btn" id="activity-export-btn">⬇ Export CSV</button>
@@ -108,6 +126,7 @@
   </div>
 </div>
 
+<!-- Removed Links -->
 <div class="modal-overlay" id="removed-overlay">
   <div class="modal" style="max-width:600px">
     <h2>🗑️ Removed links</h2>
@@ -119,94 +138,274 @@
   </div>
 </div>
 
-<script>
-let DATA = {};
-let activeTab = "All";
-let editPassword = sessionStorage.getItem('cxhub_pw') || null;
-let linkCounts = {};
+<div class="unlock-link" id="unlock-link" style="max-width:640px; margin-left:auto; margin-right:auto;">🔒 Enable edit access</div>
 
-const tabsEl = document.getElementById('tabs');
+<script>
+const DOC_TYPES = ['Forms', 'Trackers & Response Sheets', "SOP's", "Doc's & Guides"];
+
+// Static metadata: icons/labels/flat-ness don't change via the UI, only the link data does.
+const CATEGORY_META = {
+  'common-tools': { icon: '🛠️', label: 'Common Tools', flat: true },
+  dsa: { icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFcAAABXCAYAAABxyNlsAAADhUlEQVR4nO2cP3LqMBCHlTev9AGUnvIVpvAhOAatD+SWY+QQLnCRMj06gHteEzHG0X/tSiuyX5PADIP8+Ye8khfe7vf7XTAo/Kk9gFeG5SLCchFhuYiwXET+1h6ADTWvj/9v8/p4LIfu8fz70D09psYbtVJMzau4TupJro9+lEIIIY7ff6lAJrnXSYllUkmv3b+OiuTqcnOk7qEmuZrclI9/KFvJNQVXmXMh0+pDDp04jrLKha+oXMy0+uhHWTzFxaaFkmk1od+7pGD05NZMq41SKUZNLnRa5dCBnKRSKUZJLlRaXRej67eg3JOHmWLw5EKktR+ld2m7FaI2y+NYMFMMllyItOaUTRAn9XQ5gJZsIHKh0pqbHirj0GTJrZ1WG7mS5dCJ0+WQPY5kudRSsofC+KLlUk2rjVzJOYKj5FJIQwq1xh0kt7W0moA4hljBXrmtptVGyeNxLiIgrro102pCS8k5rtCFhzW5NS8EpcA+RmtyU+cmimm1kZtiX4Ktyb38W6LfrIW02shJ8fmzNz4PsnHTUlpt5KRYzavx2K0dN6Gi+lGCb3jU4jhKcf7swY7FKtf38dbr71anAReny+HRaBKC7WQ461w1r+Lj/PXj+Zbn1hhsx7/F5SJohaZ3/an3ZmFhu9j5QkauV4wy2+VzyAWc5SLC/bmIoNxa3+5AUWzv1OPT6DodGvBp4eP8ZVw6U6kwXCsx6HoddFpw7Zcuk3pKSy1cKzDo8YHK9S0da7c0+eTl9D+YAJMbMqjackPe/0ZRbii1BZeESzFEmpLbWuqrf+EkhH35FNKoRwHyck118zIpsQj4uhQa0tOCr8+AQt3sgrRc3xwLXZdC07Rc6pCW2zosFxGWiwjLRYTlIgKyiGj9RqIJiOomWS7FX7qDJrezJ6kUq/27jKVJ7exJmnN/k1gh0jt7ouW+8jRgI7WzJ1ouZOf1qxMtF3JL7tWJlktpA6YkxS5otfdlS5N6vElyj6P8NYKL/SKeCb03+mpAfC2A93MR4Y0bRFguIiwXEZaLyH8csFgib2xsWAAAAABJRU5ErkJggg==', label: 'DSA', flat: false },
+  'cc-borrow': { icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD4AAABCCAYAAAAPIWX+AAADCUlEQVR4nO2bPZLiMBCFe7Y29AE0OeEGJvAhOAapD0TKMeYQDiCYcHJ0AOdMsGirh8XS67baEmW+ZKqmQPZTS/0n8Xa9Xq+0Qn6VfoFSvISvjZfwtfHbamA/jP/9z3WN1ePEZBPuh5FOB/9QMMd1Dbmuoffb31K8zYnjqNgYbe9o27sfY14E42knUC38Y/81SzCnvQkPE3A6eDofvOj7fPIQxEs9h5Xv4SK3TAQqPnxOIl4k3A8jfey/JF8RwQVIxUsNAQuXLj8tWvFS4XAcX0I0f1YQsu0d5Lxa4R6HnJvUkfGQxT20ZPJc19DuuCEibIvtP1t4bCJAuGSJI971dBsLGZOP9+g9wkpAVwUnKfz455wchFsHBZ1QqSVRonv8BFpFKpror5WQfZkzbHKiwlMW0SQOHEQ8MvkaJoUjMz1HNDqGH0YTq0/G8VS+LA0fMVzXRMVdhvGf80Jz+dSEqquzHNbmY8XCFZ8UNF32wxj19rOWei4koQj9bKgpplAJt6ijLcaM+QdV66mmToqWanpuVltLvMenkhLXNVkdGwJ/eckExSLPpFd3XUNt734kMZrUFEGapCBbLZW/Q9WZZ3HUglQ9sDtusj8f2uOWohFrWzy/qHPzwwjVAxYUE47276wcqdlJyhQh10YbEVaIu6xaLrcsSjLGu6FvSQq36KMjtIp2koSocOs++hRzGxwI0TiO9Ntys4RooohXt2r5xFhKNFFkqS95gEBkk53FWDyc3dP2rshZeRHhocIrWddHqzMkhDnAWjwe19LEmGXxJZ1Rbia9OiLoWUUTRYQjS3LpbC4n0eosJb5ErM9FVDhyvPOs4pMWT1n9XKCAyUGyEYE4sJxXv5YiKRyxOhF+plULUOsJsXooYZ9lz8M3G6V3YYjqjvOiK52au291Znfiu6xaR1bbBIjby9q6ubawp+qr744bVeu3JsenPlBAr2vVyqyyNOxZtF9eSy1ONPMXChzE41vdUtSQTXjg0RFRDa2me7ILv8f6bF2LufBaqebyz9K8hK+N1Qr/BlIwwdO6DWUKAAAAAElFTkSuQmCC', label: 'CC & borrow', flat: false },
+  dca: { icon: '🏦', label: 'DCA', flat: false }
+};
+
+let DATA = { categoryOrder: [], docTypeOrder: {}, items: {} };
+let editorMode = false;
+let editPassword = sessionStorage.getItem('cxhub_pw') || null;
+let view = 'home';
+let selectedDocType = null;
+let catSearch = '';
+let linkCounts = {};
+let dragSrc = null; // generic drag source index
+
 const mainEl = document.getElementById('main');
-const searchEl = document.getElementById('search');
+const pageTitle = document.getElementById('page-title');
+const backBtn = document.getElementById('back-btn');
 const addBtn = document.getElementById('add-link-btn');
-const overlay = document.getElementById('modal-overlay');
-const catSelect = document.getElementById('f-cat');
-const newCatWrap = document.getElementById('f-newcat-wrap');
-const modalHint = document.getElementById('modal-hint');
-const unlockLink = document.getElementById('unlock-link');
 const activityBtn = document.getElementById('activity-btn');
-const activityOverlay = document.getElementById('activity-overlay');
 const removedBtn = document.getElementById('removed-btn');
+const unlockLink = document.getElementById('unlock-link');
+const addOverlay = document.getElementById('add-overlay');
+const activityOverlay = document.getElementById('activity-overlay');
 const removedOverlay = document.getElementById('removed-overlay');
 let viewsChart = null;
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
-
-function categories() { return Object.keys(DATA); }
-
-function formatDate(iso) {
-  if (!iso) return null;
-  const d = new Date(iso);
-  if (isNaN(d)) return null;
-  return 'Updated ' + d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+function iconHtml(icon) {
+  return icon.startsWith('data:image') ? `<img class="icon-img" src="${icon}" alt="">` : `<span class="icon">${icon}</span>`;
+}
+function trackKey(categoryId, docType, name) {
+  const label = CATEGORY_META[categoryId].label;
+  return docType ? `${label} / ${docType} — ${name}` : `${label} — ${name}`;
+}
+function getList(categoryId, docType) {
+  if (CATEGORY_META[categoryId].flat) return DATA.items[categoryId] || [];
+  return (DATA.items[categoryId] && DATA.items[categoryId][docType]) || [];
 }
 
-function renderTabs() {
-  const all = ["All", ...categories()];
-  tabsEl.innerHTML = all.map(c =>
-    `<div class="tab${c === activeTab ? ' active' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</div>`).join('');
-  tabsEl.querySelectorAll('.tab').forEach(t => {
-    t.addEventListener('click', () => { activeTab = t.dataset.cat; renderTabs(); renderList(); });
-  });
+async function loadData() {
+  const res = await fetch('/api/data');
+  DATA = await res.json();
 }
 
-function renderList() {
-  const q = searchEl.value.trim().toLowerCase();
-  const cats = activeTab === "All" ? categories() : [activeTab];
-  let html = '', totalShown = 0;
-  cats.forEach(cat => {
-    const items = (DATA[cat] || []).filter(([name]) => name.toLowerCase().includes(q));
-    if (!items.length) return;
-    totalShown += items.length;
-    html += `<div class="group"><div class="group-title">${escapeHtml(cat)}</div>`;
-    items.forEach(([name, url, updatedAt]) => {
-      const dateLabel = formatDate(updatedAt);
-      html += `<div class="item-row">
-        <a class="item" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"
-           data-track-cat="${escapeHtml(cat)}" data-track-name="${escapeHtml(name)}">
-          <span class="item-text">
-            <span class="item-name">${escapeHtml(name)}</span>
-            ${dateLabel ? `<div class="item-date">${dateLabel}</div>` : ''}
-          </span>
-          <span>↗</span>
-        </a>
-        ${editPassword ? `<span class="count-badge" title="Times opened">${linkCounts[`${cat} — ${name}`] || 0}</span>` : ''}
-        ${editPassword ? `<button class="del-btn" data-cat="${escapeHtml(cat)}" data-name="${escapeHtml(name)}">✕</button>` : ''}
-      </div>`;
+function categoryOrder() {
+  return DATA.categoryOrder.length ? DATA.categoryOrder : Object.keys(CATEGORY_META);
+}
+function docTypeOrderFor(categoryId) {
+  return (DATA.docTypeOrder && DATA.docTypeOrder[categoryId]) || DOC_TYPES;
+}
+
+// ---------- Rendering ----------
+function renderHome() {
+  pageTitle.textContent = 'CX Hub';
+  backBtn.style.display = 'none';
+  const order = categoryOrder();
+  const cards = order.map((catId, idx) => {
+    const meta = CATEGORY_META[catId];
+    return `<div class="cat-card" draggable="${editorMode}" data-idx="${idx}" data-catid="${catId}">
+      ${editorMode ? `<span class="drag-handle">⠿</span>` : ''}
+      ${iconHtml(meta.icon)}
+      <span class="label">${meta.label}</span>
+      <span class="chev">›</span>
+    </div>`;
+  }).join('');
+  mainEl.innerHTML = `<div class="cat-list">${cards}</div>`;
+
+  mainEl.querySelectorAll('.cat-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (editorMode && e.target.classList.contains('drag-handle')) return;
+      view = card.dataset.catid;
+      selectedDocType = null;
+      catSearch = '';
+      render();
     });
-    html += `</div>`;
+    if (editorMode) {
+      card.addEventListener('dragstart', () => { dragSrc = +card.dataset.idx; card.classList.add('dragging'); });
+      card.addEventListener('dragend', () => card.classList.remove('dragging'));
+      card.addEventListener('dragover', (e) => e.preventDefault());
+      card.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        const destIdx = +card.dataset.idx;
+        if (dragSrc === null || dragSrc === destIdx) return;
+        const order = categoryOrder().slice();
+        const [moved] = order.splice(dragSrc, 1);
+        order.splice(destIdx, 0, moved);
+        dragSrc = null;
+        await reorder('category', { order });
+        render();
+      });
+    }
   });
-  mainEl.innerHTML = totalShown ? html : `<div class="empty">No matches for "${escapeHtml(q)}"</div>`;
-  mainEl.querySelectorAll('.del-btn').forEach(btn => {
-    btn.addEventListener('click', () => removeLink(btn.dataset.cat, btn.dataset.name));
-  });
-  mainEl.querySelectorAll('a.item').forEach(a => {
+}
+
+function itemRowHtml(categoryId, docType, name, url, chip) {
+  const key = trackKey(categoryId, docType, name);
+  const count = linkCounts[key] || 0;
+  return `<div class="item-row" draggable="${editorMode && !chip}" data-name="${escapeHtml(name)}">
+    ${editorMode && !chip ? `<span class="drag-handle">⠿</span>` : ''}
+    <a class="name" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"
+       data-cat="${categoryId}" data-doctype="${docType || ''}" data-name="${escapeHtml(name)}">${escapeHtml(name)}</a>
+    ${chip ? `<span class="product-chip">${escapeHtml(chip)}</span>` : ''}
+    ${editorMode ? `<span class="count-badge" title="Times opened">${count}</span>` : ''}
+    ${editorMode ? `<button class="del-btn" data-cat="${categoryId}" data-doctype="${docType || ''}" data-name="${escapeHtml(name)}">✕</button>` : ''}
+  </div>`;
+}
+
+function wireItemRows(categoryId, docType) {
+  mainEl.querySelectorAll('a.name').forEach(a => {
     a.addEventListener('click', () => {
-      const cat = a.dataset.trackCat, name = a.dataset.trackName;
-      fetch('/api/track', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'click', category: cat, name })
-      }).catch(() => {});
-      if (editPassword) {
-        const key = `${cat} — ${name}`;
-        linkCounts[key] = (linkCounts[key] || 0) + 1;
-        renderList();
-      }
+      const key = trackKey(a.dataset.cat, a.dataset.doctype || null, a.dataset.name);
+      fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'click', key }) }).catch(() => {});
+      if (editorMode) { linkCounts[key] = (linkCounts[key] || 0) + 1; renderCurrentList(); }
     });
   });
+  mainEl.querySelectorAll('.del-btn').forEach(btn => {
+    btn.addEventListener('click', () => removeLink(btn.dataset.cat, btn.dataset.doctype || null, btn.dataset.name));
+  });
+  if (editorMode && docType !== undefined) {
+    mainEl.querySelectorAll('.item-row[draggable="true"]').forEach(row => {
+      row.addEventListener('dragstart', () => { dragSrc = row.dataset.name; row.classList.add('dragging'); });
+      row.addEventListener('dragend', () => row.classList.remove('dragging'));
+      row.addEventListener('dragover', (e) => e.preventDefault());
+      row.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        if (dragSrc === null) return;
+        const rows = [...mainEl.querySelectorAll('.item-row[draggable="true"]')];
+        const order = rows.map(r => r.dataset.name);
+        const srcIdx = order.indexOf(dragSrc);
+        const destIdx = order.indexOf(row.dataset.name);
+        if (srcIdx === destIdx) return;
+        order.splice(destIdx, 0, order.splice(srcIdx, 1)[0]);
+        dragSrc = null;
+        await reorder('item', { categoryId, docType, order });
+        renderCurrentList();
+      });
+    });
+  }
+}
+
+let lastRenderedCatId = null;
+function renderCurrentList() { if (lastRenderedCatId) renderCategory(lastRenderedCatId); }
+
+function renderCategory(catId) {
+  lastRenderedCatId = catId;
+  const meta = CATEGORY_META[catId];
+  pageTitle.textContent = meta.label;
+  backBtn.style.display = 'block';
+
+  const q = catSearch.trim().toLowerCase();
+  const searching = q.length > 0;
+
+  if (meta.flat) {
+    const items = getList(catId, null);
+    const filtered = searching ? items.filter(([name]) => name.toLowerCase().includes(q)) : items;
+    const listHtml = filtered.length
+      ? filtered.map(([name, url]) => itemRowHtml(catId, null, name, url, null)).join('')
+      : `<div class="empty">${searching ? `No matches for "${q}".` : 'No links added here yet.'}</div>`;
+    mainEl.innerHTML = `
+      <input id="cat-search" type="text" placeholder="Search ${escapeHtml(meta.label)}…" value="${catSearch.replace(/"/g,'&quot;')}">
+      <div class="item-list">${listHtml}</div>`;
+    document.getElementById('cat-search').addEventListener('input', (e) => { catSearch = e.target.value; renderCurrentList(); });
+    wireItemRows(catId, undefined);
+    return;
+  }
+
+  const docTypes = docTypeOrderFor(catId);
+  if (!selectedDocType || !docTypes.includes(selectedDocType)) selectedDocType = docTypes[0];
+
+  const tabs = docTypes.map((dt, idx) => `
+    <div class="product-tab ${!searching && selectedDocType === dt ? 'active' : ''}" draggable="${editorMode}" data-doctype="${escapeHtml(dt)}" data-idx="${idx}">
+      ${editorMode ? `<span class="drag-handle">⠿</span>` : ''}<span>${escapeHtml(dt)}</span>
+    </div>`).join('');
+
+  let listHtml;
+  if (searching) {
+    const results = [];
+    docTypes.forEach(dt => getList(catId, dt).forEach(([name, url]) => {
+      if (name.toLowerCase().includes(q)) results.push([name, url, dt]);
+    }));
+    listHtml = results.length
+      ? results.map(([name, url, dt]) => itemRowHtml(catId, dt, name, url, dt)).join('')
+      : `<div class="empty">No matches for "${q}" across Forms, Trackers & Response Sheets, SOP's, or Doc's & Guides.</div>`;
+  } else {
+    const items = getList(catId, selectedDocType);
+    listHtml = items.length
+      ? items.map(([name, url]) => itemRowHtml(catId, selectedDocType, name, url, null)).join('')
+      : `<div class="empty">No links added here yet.</div>`;
+  }
+
+  mainEl.innerHTML = `
+    <input id="cat-search" type="text" placeholder="Search Forms, Trackers, SOP's, Guides…" value="${catSearch.replace(/"/g,'&quot;')}">
+    <div class="product-tabs">${tabs}</div>
+    <div class="item-list">${listHtml}</div>`;
+
+  document.getElementById('cat-search').addEventListener('input', (e) => { catSearch = e.target.value; renderCurrentList(); });
+
+  mainEl.querySelectorAll('.product-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      if (editorMode && e.target.classList.contains('drag-handle')) return;
+      selectedDocType = tab.dataset.doctype;
+      catSearch = '';
+      renderCurrentList();
+    });
+    if (editorMode) {
+      tab.addEventListener('dragstart', () => { dragSrc = +tab.dataset.idx; tab.classList.add('dragging'); });
+      tab.addEventListener('dragend', () => tab.classList.remove('dragging'));
+      tab.addEventListener('dragover', (e) => e.preventDefault());
+      tab.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        const destIdx = +tab.dataset.idx;
+        if (dragSrc === null || dragSrc === destIdx) return;
+        const order = docTypeOrderFor(catId).slice();
+        const [moved] = order.splice(dragSrc, 1);
+        order.splice(destIdx, 0, moved);
+        dragSrc = null;
+        await reorder('docType', { categoryId: catId, order });
+        renderCurrentList();
+      });
+    }
+  });
+
+  wireItemRows(catId, selectedDocType);
+}
+
+function render() {
+  if (view === 'home') { lastRenderedCatId = null; renderHome(); }
+  else renderCategory(view);
+}
+
+// ---------- Edit actions ----------
+async function reorder(scope, payload) {
+  await fetch('/api/reorder', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword },
+    body: JSON.stringify({ scope, ...payload })
+  });
+  await loadData();
+}
+
+async function removeLink(categoryId, docType, name) {
+  const res = await fetch('/api/links', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword },
+    body: JSON.stringify({ categoryId, docType, name, categoryLabel: CATEGORY_META[categoryId].label })
+  });
+  if (res.status === 401) return handleAuthExpired();
+  const result = await res.json();
+  DATA = result.data ? { ...DATA, items: result.data.items } : DATA;
+  renderCurrentList();
+}
+
+function handleAuthExpired() {
+  alert('Edit access expired — please re-enter the password.');
+  editPassword = null;
+  sessionStorage.removeItem('cxhub_pw');
+  updateEditUI();
+  render();
 }
 
 function updateEditUI() {
@@ -214,6 +413,7 @@ function updateEditUI() {
   activityBtn.style.display = editPassword ? 'block' : 'none';
   removedBtn.style.display = editPassword ? 'block' : 'none';
   unlockLink.textContent = editPassword ? '🔓 Edit access enabled' : '🔒 Enable edit access';
+  editorMode = !!editPassword;
 }
 
 unlockLink.addEventListener('click', async () => {
@@ -228,80 +428,65 @@ unlockLink.addEventListener('click', async () => {
     updateEditUI();
     const stats = await fetchStats();
     if (stats) linkCounts = stats.linkClicks || {};
-    renderList();
+    render();
   } else {
     alert('Incorrect password.');
   }
 });
 
-function populateCategorySelect() {
-  catSelect.innerHTML = categories().map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')
-    + `<option value="__new__">+ New category…</option>`;
-}
-catSelect?.addEventListener('change', () => { newCatWrap.style.display = catSelect.value === '__new__' ? 'block' : 'none'; });
-
-function openModal() {
+// ---------- Add link modal ----------
+function openAddModal() {
   document.getElementById('f-name').value = '';
   document.getElementById('f-url').value = '';
-  document.getElementById('f-newcat').value = '';
-  newCatWrap.style.display = 'none';
-  populateCategorySelect();
-  modalHint.textContent = '';
-  overlay.classList.add('open');
+  document.getElementById('add-hint').textContent = '';
+  const meta = CATEGORY_META[view] || CATEGORY_META['common-tools'];
+  const wrap = document.getElementById('f-doctype-wrap');
+  const select = document.getElementById('f-doctype');
+  if (!meta.flat) {
+    wrap.style.display = 'block';
+    const docTypes = view !== 'home' ? docTypeOrderFor(view) : DOC_TYPES;
+    select.innerHTML = docTypes.map(dt => `<option value="${escapeHtml(dt)}" ${dt === selectedDocType ? 'selected' : ''}>${escapeHtml(dt)}</option>`).join('');
+  } else {
+    wrap.style.display = 'none';
+  }
+  addOverlay.classList.add('open');
 }
-function closeModal() { overlay.classList.remove('open'); }
+function closeAddModal() { addOverlay.classList.remove('open'); }
 
 async function saveLink() {
   const name = document.getElementById('f-name').value.trim();
   const url = document.getElementById('f-url').value.trim();
-  let category = catSelect.value;
-  if (category === '__new__') category = document.getElementById('f-newcat').value.trim();
-  if (!name || !url || !category) { modalHint.textContent = 'Please fill in all fields.'; return; }
-  if (!/^https?:\/\//i.test(url)) { modalHint.textContent = 'Link should start with http:// or https://'; return; }
+  const hint = document.getElementById('add-hint');
+  const categoryId = view !== 'home' ? view : 'common-tools';
+  const meta = CATEGORY_META[categoryId];
+  const docType = meta.flat ? null : document.getElementById('f-doctype').value;
+
+  if (view === 'home') { hint.textContent = 'Open a category first, then add a link inside it.'; return; }
+  if (!name || !url) { hint.textContent = 'Please fill in name and link.'; return; }
+  if (!/^https?:\/\//i.test(url)) { hint.textContent = 'Link should start with http:// or https://'; return; }
 
   const res = await fetch('/api/links', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword },
-    body: JSON.stringify({ category, name, url })
+    body: JSON.stringify({ categoryId, docType, name, url })
   });
-  if (res.status === 401) { alert('Edit access expired — please re-enter the password.'); editPassword = null; sessionStorage.removeItem('cxhub_pw'); updateEditUI(); closeModal(); return; }
+  if (res.status === 401) { closeAddModal(); return handleAuthExpired(); }
   const result = await res.json();
-  DATA = result.data;
-  closeModal();
-  renderTabs();
-  renderList();
+  DATA.items = result.data.items;
+  closeAddModal();
+  renderCurrentList();
 }
 
-async function removeLink(category, name) {
-  const res = await fetch('/api/links', {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword },
-    body: JSON.stringify({ category, name })
-  });
-  if (res.status === 401) { alert('Edit access expired — please re-enter the password.'); editPassword = null; sessionStorage.removeItem('cxhub_pw'); updateEditUI(); return; }
-  const result = await res.json();
-  DATA = result.data;
-  if (activeTab !== 'All' && !DATA[activeTab]) activeTab = 'All';
-  renderTabs();
-  renderList();
-}
-
+// ---------- Activity Center ----------
 async function fetchStats() {
   const res = await fetch('/api/stats', { headers: { 'x-edit-password': editPassword } });
-  if (res.status === 401) {
-    alert('Edit access expired — please re-enter the password.');
-    editPassword = null;
-    sessionStorage.removeItem('cxhub_pw');
-    updateEditUI();
-    return null;
-  }
+  if (res.status === 401) { handleAuthExpired(); return null; }
   return res.json();
 }
 
 async function openActivityCenter() {
   const stats = await fetchStats();
   if (!stats) return;
-
   const totalViews = Object.values(stats.dailyViews || {}).reduce((a, b) => a + b, 0);
   const totalClicks = Object.values(stats.linkClicks || {}).reduce((a, b) => a + b, 0);
   document.getElementById('activity-summary').innerHTML = `
@@ -314,115 +499,87 @@ async function openActivityCenter() {
       <div style="font-size:0.78rem; color:var(--text-muted)">Total link clicks</div>
     </div>`;
 
-  // Last 14 days of views, oldest to newest
   const days = [];
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    days.push(d.toISOString().slice(0, 10));
-  }
+  for (let i = 13; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days.push(d.toISOString().slice(0, 10)); }
   const viewCounts = days.map(d => (stats.dailyViews || {})[d] || 0);
   const labels = days.map(d => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
-
   const ctx = document.getElementById('views-chart').getContext('2d');
   if (viewsChart) viewsChart.destroy();
-  viewsChart = new Chart(ctx, {
-    type: 'bar',
-    data: { labels, datasets: [{ label: 'Page views', data: viewCounts, backgroundColor: '#7c5cfc' }] },
-    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
-  });
+  viewsChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Page views', data: viewCounts, backgroundColor: '#7c5cfc' }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });
 
   const topLinks = Object.entries(stats.linkClicks || {}).sort((a, b) => b[1] - a[1]);
   document.getElementById('top-links').innerHTML = topLinks.length
-    ? topLinks.map(([name, count]) => `
-        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:0.88rem;">
-          <span>${escapeHtml(name)}</span><span style="color:var(--accent); font-weight:600">${count} open${count === 1 ? '' : 's'}</span>
+    ? topLinks.map(([key, count]) => `
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:0.85rem;">
+          <span>${escapeHtml(key)}</span><span style="color:var(--accent); font-weight:600">${count} open${count === 1 ? '' : 's'}</span>
         </div>`).join('')
     : `<div class="hint">No clicks recorded yet.</div>`;
 
   activityOverlay.classList.add('open');
 }
 
+function csvEscape(v) { const s = String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }
 function downloadCsv(filename, text) {
   const blob = new Blob([text], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-
-function csvEscape(v) {
-  const s = String(v);
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-}
-
 async function exportActivityCsv() {
   const stats = await fetchStats();
   if (!stats) return;
-
   let csv = 'Daily page views\nDate,Views\n';
-  Object.entries(stats.dailyViews || {}).sort(([a], [b]) => a.localeCompare(b))
-    .forEach(([date, count]) => { csv += `${date},${count}\n`; });
-
-  csv += '\nLink open counts\nCategory,Name,Opens\n';
-  Object.entries(stats.linkClicks || {}).sort((a, b) => b[1] - a[1]).forEach(([key, count]) => {
-    const [category, name] = key.split(' — ');
-    csv += `${csvEscape(category || '')},${csvEscape(name || key)},${count}\n`;
-  });
-
-  csv += '\nRemoved links\nCategory,Name,URL,Removed At\n';
-  (stats.deletedLinks || []).forEach(d => {
-    csv += `${csvEscape(d.category)},${csvEscape(d.name)},${csvEscape(d.url)},${d.deletedAt}\n`;
-  });
-
-  downloadCsv(`cx-hub-activity-${todayStr()}.csv`, csv);
+  Object.entries(stats.dailyViews || {}).sort(([a],[b]) => a.localeCompare(b)).forEach(([d,c]) => csv += `${d},${c}\n`);
+  csv += '\nLink open counts\nLink,Opens\n';
+  Object.entries(stats.linkClicks || {}).sort((a,b) => b[1]-a[1]).forEach(([k,c]) => csv += `${csvEscape(k)},${c}\n`);
+  csv += '\nRemoved links\nCategory,Doc Type,Name,URL,Removed At\n';
+  (stats.deletedLinks || []).forEach(d => csv += `${csvEscape(d.categoryLabel)},${csvEscape(d.docType||'')},${csvEscape(d.name)},${csvEscape(d.url)},${d.deletedAt}\n`);
+  downloadCsv(`cx-hub-activity-${new Date().toISOString().slice(0,10)}.csv`, csv);
 }
-
-function todayStr() { return new Date().toISOString().slice(0, 10); }
 
 async function openRemovedLinks() {
   const stats = await fetchStats();
   if (!stats) return;
-  const deletedLinks = stats.deletedLinks || [];
-  document.getElementById('removed-links').innerHTML = deletedLinks.length
-    ? deletedLinks.map(d => `
+  const deleted = stats.deletedLinks || [];
+  document.getElementById('removed-links').innerHTML = deleted.length
+    ? deleted.map(d => `
         <div style="padding:8px 0; border-bottom:1px solid var(--border); font-size:0.85rem;">
-          <div style="font-weight:600">${escapeHtml(d.name)} <span style="font-weight:400; color:var(--text-muted)">(${escapeHtml(d.category)})</span></div>
+          <div style="font-weight:600">${escapeHtml(d.name)} <span style="font-weight:400; color:var(--text-muted)">(${escapeHtml(d.categoryLabel)}${d.docType ? ' / ' + escapeHtml(d.docType) : ''})</span></div>
           <div style="font-size:0.76rem; color:var(--text-muted); word-break:break-all;">${escapeHtml(d.url)}</div>
-          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Removed ${new Date(d.deletedAt).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' })}</div>
+          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Removed ${new Date(d.deletedAt).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})}</div>
         </div>`).join('')
     : `<div class="hint">No links have been removed yet.</div>`;
   removedOverlay.classList.add('open');
 }
 
-searchEl.addEventListener('input', renderList);
-addBtn.addEventListener('click', openModal);
-document.getElementById('cancel-btn').addEventListener('click', closeModal);
-document.getElementById('save-btn').addEventListener('click', saveLink);
-overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+// ---------- Wire up ----------
+backBtn.addEventListener('click', () => { view = 'home'; selectedDocType = null; catSearch = ''; render(); });
+addBtn.addEventListener('click', openAddModal);
+document.getElementById('add-cancel-btn').addEventListener('click', closeAddModal);
+document.getElementById('add-save-btn').addEventListener('click', saveLink);
+addOverlay.addEventListener('click', (e) => { if (e.target === addOverlay) closeAddModal(); });
+
 activityBtn.addEventListener('click', openActivityCenter);
 document.getElementById('activity-close-btn').addEventListener('click', () => activityOverlay.classList.remove('open'));
 document.getElementById('activity-export-btn').addEventListener('click', exportActivityCsv);
 activityOverlay.addEventListener('click', (e) => { if (e.target === activityOverlay) activityOverlay.classList.remove('open'); });
+
 removedBtn.addEventListener('click', openRemovedLinks);
 document.getElementById('removed-close-btn').addEventListener('click', () => removedOverlay.classList.remove('open'));
 removedOverlay.addEventListener('click', (e) => { if (e.target === removedOverlay) removedOverlay.classList.remove('open'); });
 
 (async () => {
-  const res = await fetch('/api/links');
-  DATA = await res.json();
+  await loadData();
   updateEditUI();
-  renderTabs();
-  renderList();
-  fetch('/api/track', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type: 'pageview' })
-  }).catch(() => {});
+  render();
+  fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'pageview' }) }).catch(() => {});
+  if (editPassword) {
+    const stats = await fetchStats();
+    if (stats) { linkCounts = stats.linkClicks || {}; render(); }
+  }
 })();
 </script>
 </body>
