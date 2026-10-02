@@ -1,223 +1,348 @@
 {
-  "Tools": [
-    [
-      "IT - Freshworks",
-      "https://sliceit.freshservice.com/support/home",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Slack",
-      "https://app.slack.com/client/T2FGE2LQM/C0BN7LKCAR5",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Darwin",
-      "https://slice.darwinbox.in/ms/db/home",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Prod Spacce",
-      "https://prod.cx.spacce.app/login",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Beta Spacce",
-      "https://beta-api.nebank.com/non-banking/spacce-cx/chats/live-chat",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Spacce Onboarding",
-      "https://api.nebank.com/banking/spacce-onboarding/v1/login",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Freshdesk",
-      "https://slice.freshdesk.com/a/dashboard/default",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Orbit Borrow",
-      "https://borrow.orbits.work/home",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Outlook",
-      "https://outlook.cloud.microsoft/mail/",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Ameyo",
-      "https://garagepreneursapp.ameyoemerge.in:8443/app/?campaign=10#!home",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "M365 Apps",
-      "https://m365.cloud.microsoft/apps?origindomain=Office",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Osfin",
-      "https://slice.osfin.ai/disputes/upi/NES/chargeback",
-      "2026-09-30T00:00:00.000Z"
-    ]
+  "categoryOrder": [
+    "common-tools",
+    "dsa",
+    "cc-borrow",
+    "dca"
   ],
-  "Forms & Trackers": [
-    [
-      "Service and Action",
-      "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhPHbzYMO9hIj2CZp9fV3HpUQ0tDS0M2VFBYU0hCMU5DVDZTN043RVI3UC4u",
-      "2026-09-30T00:00:00.000Z"
+  "docTypeOrder": {
+    "dsa": [
+      "Forms",
+      "Trackers & Response Sheets",
+      "SOP's",
+      "Doc's & Guides"
     ],
-    [
-      "Passbook Tracker",
-      "https://slicebank-my.sharepoint.com/:x:/r/personal/prashant_kumar_slicebank_com/_layouts/15/guestaccess.aspx?e=CeHDar&share=EUASSo_JtyFJtwgjEUKb6YoBeM_hIEFj7V9m4oPeejW21g",
-      "2026-09-30T00:00:00.000Z"
+    "cc-borrow": [
+      "Forms",
+      "Trackers & Response Sheets",
+      "SOP's",
+      "Doc's & Guides"
     ],
-    [
-      "Chargeback - Domestic",
-      "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDv-ndRSAnRNDgfsAIZt1xO1UQlVUOTI4SU4wVTNNSVlGNjRTSkhVRE9YWS4u",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Chargeback - Domestic Response Sheet",
-      "https://slicebank-my.sharepoint.com/:x:/p/mohammed_aslam/IQANgCIjZfNoQZSVtcroJCtpAZaB7WOgpAaOnGbbvTOmAoA?e=GqXPaS",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Chargeback - International",
-      "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhv8yOlw3wVLm9ebjVNbSbBUQlExWUwxQ09YOUE5N0VTRkhPNlM3UExKUC4u",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Chargeback - International Response Sheet",
-      "https://slicebank-my.sharepoint.com/personal/shruthi_pl_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7B7BB66A42-055F-44D7-BF0F-B92DCC06AE45%7D&file=Rupay%20International%20Disputes.xlsx&action=default&mobileredirect=true",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Cheque Book Tracker",
-      "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/guestaccess.aspx?e=tq4nxa&share=EaZNJ0ys4mVJoTJUJHa9BFABnS7rwiOeARiaBbAbgsFuLQ",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Debit Card Tracker",
-      "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/guestaccess.aspx?e=fakVrg&share=EbJLhFU2gExIjfMU4KsJ6gEBsLVBc4-s78JNHjAh5ABrDw",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "CC Billing Cycle Change Form",
-      "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDmlqAvJBQ9FHjWMEJYLoomZUOTdIRExRWUFMTjRPQVc5Q1RLT0dJU1ZUSy4u",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "CC Billing Cycle Change Response Sheet",
-      "https://slicebank-my.sharepoint.com/:x:/p/lokesh_v/IQCkoNFnAUDaRrWFUpCP3pA-AQzrHQu8s6klUgxPSgHyOxg?e=ScU14R",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Potential RBI Cases",
-      "https://slicebank.sharepoint.com/:x:/s/slice-SharedDrives/IQAfZYdwtIo8TZ3mF2H78JUmAWYT4vVZZkm3m9XLT6irsKk?e=Gkgp2Q",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Delivery Issue Tracker",
-      "https://forms.cloud.microsoft/pages/responsepage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDsoc56SK7zNKjeiJpOME7MxURUVMSFYyT1dJVzZXMlg5U1pFRThDRDI1US4u&route=shorturl",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "UPI CC Disputes",
-      "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhvFwIafIvlCo4TyW9xLGEdUOUI0VTFRUTJaWTJLQTROQkNaNEZXQjVFMy4u",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "UPI CC Disputes Response Sheet",
-      "https://slicebank-my.sharepoint.com/:x:/r/personal/singanamala_sarankumar_slicebank_com/_layouts/15/guestaccess.aspx?e=2ap5Eh&share=EacqT8Cs6w1OmsSwtOvXOd8BcqYTSG656hjKJtIna6anbw",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "UPI CL Disputes",
-      "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhvFwIafIvlCo4TyW9xLGEdUQkdRWDFBMkJTNkY4SE9MM0NSV0JSVFdYMy4u",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "UPI CL Disputes Response Sheet",
-      "https://slicebank-my.sharepoint.com/personal/shruthi_pl_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7B7BB66A42-055F-44D7-BF0F-B92DCC06AE45%7D&file=Rupay%20International%20Disputes.xlsx&action=default&mobileredirect=true",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Borrow Waiver - September 2026",
-      "https://slicebank-my.sharepoint.com/:x:/p/lokesh_v/IQCCqVGbvE7cTIAPxvZ2KsZwAeW4cf5Gw5JNSXvPek5Usig?e=IjvleR",
-      "2026-09-30T00:00:00.000Z"
+    "dca": [
+      "Forms",
+      "Trackers & Response Sheets",
+      "SOP's",
+      "Doc's & Guides"
     ]
-  ],
-  "Guides & SOPs": [
-    [
-      "DSA - Onboarding PPT",
-      "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQAYQwG5iiJ0S5lwg77FWKLsAeTTNdfObjoaUGMbgMMEJRo?e=595cNr",
-      "2026-09-30T00:00:00.000Z"
+  },
+  "items": {
+    "common-tools": [
+      [
+        "Ameyo",
+        "https://garagepreneursapp.ameyoemerge.in:8443/app/?campaign=10#!home",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Beta Spacce",
+        "https://beta-api.nebank.com/non-banking/spacce-cx/chats/live-chat",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Darwin",
+        "https://slice.darwinbox.in/ms/db/home",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Freshdesk",
+        "https://slice.freshdesk.com/a/dashboard/default",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "IT - Freshworks",
+        "https://sliceit.freshservice.com/support/home",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "M365 Apps",
+        "https://m365.cloud.microsoft/apps?origindomain=Office",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Orbit Borrow",
+        "https://borrow.orbits.work/home",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Osfin",
+        "https://slice.osfin.ai/disputes/upi/NES/chargeback",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Outlook",
+        "https://outlook.cloud.microsoft/mail/",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Prod Spacce",
+        "https://prod.cx.spacce.app/login",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Slack",
+        "https://app.slack.com/client/T2FGE2LQM/C0BN7LKCAR5",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Spacce CBS",
+        "https://cbs.spacce.app/home/",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "Spacce Onboarding",
+        "https://api.nebank.com/banking/spacce-onboarding/v1/login",
+        "2026-10-02T00:00:00.000Z"
+      ],
+      [
+        "October Roster",
+        "https://slicebank.sharepoint.com/:x:/s/slice-SharedDrives/IQB9g5kuKUrBTYXYkjRqVWOSAbbhmIT0T4qMXs4075Ng1og?e=iBal0g",
+        "2026-10-02T00:00:00.000Z"
+      ]
     ],
-    [
-      "DSA - Onboarding SOP",
-      "https://slicebank-my.sharepoint.com/:o:/r/personal/vinisha_a_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7B7b03a943-c0b3-4606-bf56-c01049e2e328%7D&action=view",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Credit Card - PPT",
-      "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQAm9-FOBiCyQ4_eFbWEm1kYATVsFErfccm7Y5x7ryTFUYw?e=JPDabk",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Credit Card - SOP",
-      "https://slicebank-my.sharepoint.com/:o:/r/personal/vinisha_a_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7Ba66e61bc-680a-4979-a03d-98d0a85a076c%7D&action=view",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Borrow - PPT / SOP",
-      "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQCDGbOokymQSZdsGXXE4a7BASu66FoZjmQCv7ZT_9fbfv4?e=e4wRKn",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "SPARKS",
-      "https://help.slice.bank.in/support/solutions/articles/84000398924",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "MITC",
-      "https://slice.bank.in/cc-mitc/",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "DSA - Interest & Charges",
-      "https://slice.bank.in/rates-and-pricing",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "RCA Sheet",
-      "https://slicebank-my.sharepoint.com/:x:/r/personal/amit_chowdhury_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7Bde517258-ca18-4713-9ecc-d06945b7cb04%7D&action=edit",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "L2 Call Closure Templates",
-      "https://slicebank-my.sharepoint.com/:w:/p/prashant_kumar/IQBOHF5ZfQeAQ4iZXydfzjY0AdhrAmeSSHg0yr_TdCSqzL4?e=GLCw5w",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "CC Rejection Repository",
-      "https://slicebank-my.sharepoint.com/:x:/r/personal/lokesh_v_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7Ba775636c-7acd-4638-a14b-14babbfd62ee%7D&action=view",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "TAT Sheet",
-      "https://slicebank-my.sharepoint.com/:x:/p/vinisha_a/IQDPXyO3egbjRZFd0R1SkSP0AaajFdBJ8_eXeLBUVO1JtLI?e=ezOzN8",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "IT SIT DSA Repository",
-      "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/doc2.aspx?sourcedoc=%7B728a4db6-fa73-4c66-a2d4-824b36b69b9b%7D&action=view",
-      "2026-09-30T00:00:00.000Z"
-    ],
-    [
-      "Branch List",
-      "https://www.branchlist.in/banks/slice-small-finance-bank-limited",
-      "2026-09-30T00:00:00.000Z"
-    ]
-  ]
+    "dsa": {
+      "Forms": [
+        [
+          "Rupay Raise Dispute Form",
+          "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhv8yOlw3wVLm9ebjVNbSbBURjFCVzhPTVIyQzM1NjFaQ1lBWVo3NUtWSy4u",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Service and Action",
+          "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhPHbzYMO9hIj2CZp9fV3HpUQ0tDS0M2VFBYU0hCMU5DVDZTN043RVI3UC4u",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Delivery Issue Tracker",
+          "https://forms.cloud.microsoft/pages/responsepage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDsoc56SK7zNKjeiJpOME7MxURUVMSFYyT1dJVzZXMlg5U1pFRThDRDI1US4u&route=shorturl",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "ATM Dispute Form",
+          "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhvFwIafIvlCo4TyW9xLGEdUM0JRMlhMQTIyWkxMSkM0Q0pYM0JDRUpaTS4u",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "UPI ATM ICD Escalation",
+          "https://forms.cloud.microsoft/pages/responsepage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDnunEu09ORBGp3TGr98x9-5UREYxU1dFVUVERUNJMEY3Rkc3RTRVQk1QVi4u&route=shorturl",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Customer Delight Nomination Form",
+          "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDuMoMYBW9gJPthr0irEIiJNURjEyRUIxNVE1U01LM09PODhCWVhNV1JCUC4u",
+          "2026-10-02T00:00:00.000Z"
+        ]
+      ],
+      "Trackers & Response Sheets": [
+        [
+          "Cheque Book Tracker",
+          "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/guestaccess.aspx?e=tq4nxa&share=EaZNJ0ys4mVJoTJUJHa9BFABnS7rwiOeARiaBbAbgsFuLQ",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Debit Card Tracker",
+          "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/guestaccess.aspx?e=fakVrg&share=EbJLhFU2gExIjfMU4KsJ6gEBsLVBc4-s78JNHjAh5ABrDw",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Passbook Tracker",
+          "https://slicebank-my.sharepoint.com/:x:/r/personal/prashant_kumar_slicebank_com/_layouts/15/guestaccess.aspx?e=CeHDar&share=EUASSo_JtyFJtwgjEUKb6YoBeM_hIEFj7V9m4oPeejW21g",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "ATM Dispute Response Sheet",
+          "https://slicebank-my.sharepoint.com/:x:/r/personal/singanamala_sarankumar_slicebank_com/_layouts/15/guestaccess.aspx?e=28wqpG&share=EVY8_FunFmNDpEsbOLR8a2EBGbFs6PDGpjajB5ZJkWknmw",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Service and Action Response Sheet",
+          "https://slicebank-my.sharepoint.com/personal/syed_mateen_slicebank_com/_layouts/15/AccessDenied.aspx",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "UPI Manual Refunds",
+          "https://slicebank-my.sharepoint.com/:x:/r/personal/singanamala_sarankumar_slicebank_com/_layouts/15/guestaccess.aspx?e=eE3frd&share=Ef9rGAMy_SZKuzfmcErqK84BJW1bXsIVhn882BVohW9fkw",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "UPI ATM ICD Escalation Response Sheet",
+          "https://slicebank-my.sharepoint.com/:x:/p/srinivasan_sr_cw/IQBpxqioUYM-TJSesWaKFCxpASC3P6Z7l_GjEP8_6PsTgbU?e=oqzKe2",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "UPI ATM ICD Escalation Response Sheet",
+          "https://slicebank-my.sharepoint.com/:x:/p/srinivasan_sr_cw/IQBpxqioUYM-TJSesWaKFCxpASC3P6Z7l_GjEP8_6PsTgbU?e=oqzKe2",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "FD Advice",
+          "https://slicebank-my.sharepoint.com/:x:/r/personal/prashant_kumar_slicebank_com/_layouts/15/guestaccess.aspx?e=6IpgF0&share=EfKNO82oGs5DrhkRNo0OTJ0BK_aUgF6cuGuaGPzD7Frjeg",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Delivery Issue Tracker Response Sheet",
+          "https://slicebank-my.sharepoint.com/:x:/r/personal/prashant_kumar_slicebank_com/_layouts/15/guestaccess.aspx?e=ec7K0w&share=ETNktYvExZNDrCohkgihitgBWZDXAFtIS9kvAtJ2M9vumQ",
+          "2026-10-02T00:00:00.000Z"
+        ]
+      ],
+      "SOP's": [
+        [
+          "DSA SOP",
+          "https://slicebank-my.sharepoint.com/:o:/r/personal/vinisha_a_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7B7b03a943-c0b3-4606-bf56-c01049e2e328%7D&action=view",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "DSA SOP Revamped",
+          "https://slicebank-my.sharepoint.com/:w:/r/personal/vikram_br_slicebank_com/_layouts/15/guestaccess.aspx?e=syGG7a&share=EaS7UoHUrSBKoPHKqshsiokBHJDc89LaU3PXvUd0J41QCA",
+          "2026-10-02T00:00:00.000Z"
+        ]
+      ],
+      "Doc's & Guides": [
+        [
+          "DSA Training Guide PPT",
+          "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQAYQwG5iiJ0S5lwg77FWKLsAeTTNdfObjoaUGMbgMMEJRo?e=595cNr",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "DSA - Rates and Pricing",
+          "https://slice.bank.in/rates-and-pricing",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "IT - SIT Repository",
+          "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/doc2.aspx?sourcedoc=%7B728a4db6-fa73-4c66-a2d4-824b36b69b9b%7D&action=view",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "TAT Sheet",
+          "https://slicebank-my.sharepoint.com/:x:/p/vinisha_a/IQDPXyO3egbjRZFd0R1SkSP0AaajFdBJ8_eXeLBUVO1JtLI?e=ezOzN8",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Branch List",
+          "https://www.branchlist.in/banks/slice-small-finance-bank-limited",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "History of slice",
+          "https://slicebank.sharepoint.com/:p:/r/sites/Trainingteam/_layouts/15/guestaccess.aspx?e=xyPRcr&share=IQAmmRLHbMuUS5GdcObiMuUDAdlOEg_1kP2mYBnDuLMUooQ",
+          "2026-10-02T00:00:00.000Z"
+        ]
+      ]
+    },
+    "cc-borrow": {
+      "Forms": [
+        [
+          "Chargeback - CC Domestic",
+          "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDv-ndRSAnRNDgfsAIZt1xO1UQlVUOTI4SU4wVTNNSVlGNjRTSkhVRE9YWS4u",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Chargeback - CC International",
+          "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhv8yOlw3wVLm9ebjVNbSbBUQlExWUwxQ09YOUE5N0VTRkhPNlM3UExKUC4u",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "CC Billing Cycle Change",
+          "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDmlqAvJBQ9FHjWMEJYLoomZUOTdIRExRWUFMTjRPQVc5Q1RLT0dJU1ZUSy4u",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "UPI CC Disputes",
+          "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhvFwIafIvlCo4TyW9xLGEdUOUI0VTFRUTJaWTJLQTROQkNaNEZXQjVFMy4u",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "UPI CL Disputes",
+          "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDhvFwIafIvlCo4TyW9xLGEdUQkdRWDFBMkJTNkY4SE9MM0NSV0JSVFdYMy4u",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Delivery Issue Tracker",
+          "https://forms.cloud.microsoft/pages/responsepage.aspx?id=xLhW_Zi5gUi1PqH8WpxgDsoc56SK7zNKjeiJpOME7MxURUVMSFYyT1dJVzZXMlg5U1pFRThDRDI1US4u&route=shorturl",
+          "2026-10-02T00:00:00.000Z"
+        ]
+      ],
+      "Trackers & Response Sheets": [
+        [
+          "Chargeback - CC Domestic Response Sheet",
+          "https://slicebank-my.sharepoint.com/:x:/p/mohammed_aslam/IQANgCIjZfNoQZSVtcroJCtpAZaB7WOgpAaOnGbbvTOmAoA?e=GqXPaS",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Chargeback - CC International Response Sheet",
+          "https://slicebank-my.sharepoint.com/personal/shruthi_pl_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7B7BB66A42-055F-44D7-BF0F-B92DCC06AE45%7D&file=Rupay%20International%20Disputes.xlsx&action=default&mobileredirect=true",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "CC Billing Cycle Change Response Sheet",
+          "https://slicebank-my.sharepoint.com/:x:/p/lokesh_v/IQCkoNFnAUDaRrWFUpCP3pA-AQzrHQu8s6klUgxPSgHyOxg?e=ScU14R",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "UPI CC Disputes Response Sheet",
+          "https://slicebank-my.sharepoint.com/:x:/r/personal/singanamala_sarankumar_slicebank_com/_layouts/15/guestaccess.aspx?e=2ap5Eh&share=EacqT8Cs6w1OmsSwtOvXOd8BcqYTSG656hjKJtIna6anbw",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "UPI CL Disputes Response Sheet",
+          "https://slicebank-my.sharepoint.com/personal/shruthi_pl_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7B7BB66A42-055F-44D7-BF0F-B92DCC06AE45%7D&file=Rupay%20International%20Disputes.xlsx&action=default&mobileredirect=true",
+          "2026-10-02T00:00:00.000Z"
+        ]
+      ],
+      "SOP's": [
+        [
+          "CC SOP",
+          "https://slicebank-my.sharepoint.com/:o:/r/personal/vinisha_a_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7Ba66e61bc-680a-4979-a03d-98d0a85a076c%7D&action=view",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Borrow SOP",
+          "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQCDGbOokymQSZdsGXXE4a7BASu66FoZjmQCv7ZT_9fbfv4?e=e4wRKn",
+          "2026-10-02T00:00:00.000Z"
+        ]
+      ],
+      "Doc's & Guides": [
+        [
+          "CC Training Guide PPT",
+          "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQAm9-FOBiCyQ4_eFbWEm1kYATVsFErfccm7Y5x7ryTFUYw?e=JPDabk",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "Borrow Training Guide PPT",
+          "https://slicebank.sharepoint.com/:p:/s/Trainingteam/IQCDGbOokymQSZdsGXXE4a7BASu66FoZjmQCv7ZT_9fbfv4?e=e4wRKn",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "SPARKS",
+          "https://help.slice.bank.in/support/solutions/articles/84000398924",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "MITC",
+          "https://slice.bank.in/cc-mitc/",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "CC Rejection Repository",
+          "https://slicebank-my.sharepoint.com/:x:/r/personal/lokesh_v_slicebank_com/_layouts/15/Doc.aspx?sourcedoc=%7Ba775636c-7acd-4638-a14b-14babbfd62ee%7D&action=view",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "TAT Sheet",
+          "https://slicebank-my.sharepoint.com/:x:/p/vinisha_a/IQDPXyO3egbjRZFd0R1SkSP0AaajFdBJ8_eXeLBUVO1JtLI?e=ezOzN8",
+          "2026-10-02T00:00:00.000Z"
+        ],
+        [
+          "IT - SIT Repository",
+          "https://slicebank.sharepoint.com/:x:/r/sites/slice-SharedDrives/_layouts/15/doc2.aspx?sourcedoc=%7B728a4db6-fa73-4c66-a2d4-824b36b69b9b%7D&action=view",
+          "2026-10-02T00:00:00.000Z"
+        ]
+      ]
+    },
+    "dca": {
+      "Forms": [],
+      "Trackers & Response Sheets": [],
+      "SOP's": [],
+      "Doc's & Guides": []
+    }
+  }
 }

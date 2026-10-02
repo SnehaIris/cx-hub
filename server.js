@@ -6,21 +6,19 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Where link data is stored. By default this is a file inside the app folder,
-// which works fine to start but gets reset every time you redeploy on Render's
-// free tier. See README.md for how to point this at a persistent disk later.
 const DATA_FILE = process.env.DATA_FILE || path.join(__dirname, 'data.json');
 const STATS_FILE = process.env.STATS_FILE || path.join(__dirname, 'stats.json');
-
-// The password people need to add/remove links. Set this as an environment
-// variable in Render (never hard-code your real password here).
 const EDIT_PASSWORD = process.env.EDIT_PASSWORD || 'changeme';
 
+const DOC_TYPES = ['Forms', 'Trackers & Response Sheets', "SOP's", "Doc's & Guides"];
+const FLAT_CATEGORIES = ['common-tools'];
+
 function readData() {
-  if (!fs.existsSync(DATA_FILE)) return {};
+  if (!fs.existsSync(DATA_FILE)) {
+    return { categoryOrder: ['common-tools', 'dsa', 'cc-borrow', 'dca'], docTypeOrder: {}, items: {} };
+  }
   return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
 }
-
 function writeData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
@@ -31,36 +29,32 @@ function readStats() {
   if (!stats.deletedLinks) stats.deletedLinks = [];
   return stats;
 }
-
 function writeStats(stats) {
   fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2));
 }
+function todayKey() { return new Date().toISOString().slice(0, 10); }
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+function requirePassword(req, res, next) {
+  if (req.headers['x-edit-password'] !== EDIT_PASSWORD) {
+    return res.status(401).json({ error: 'Incorrect edit password' });
+  }
+  next();
 }
 
-// Anyone can read the links.
-app.get('/api/links', (req, res) => {
-  res.json(readData());
-});
+// --- Public reads ---
+app.get('/api/data', (req, res) => res.json(readData()));
 
-// Check the edit password without changing anything (used by the "unlock edit" button).
 app.post('/api/verify', (req, res) => {
-  const { password } = req.body || {};
-  res.json({ ok: password === EDIT_PASSWORD });
+  res.json({ ok: (req.body || {}).password === EDIT_PASSWORD });
 });
 
-// Anyone's browser can send these — used to silently count visits/clicks.
-// No personal data is stored, just counts.
 app.post('/api/track', (req, res) => {
-  const { type, category, name } = req.body || {};
+  const { type, key } = req.body || {};
   const stats = readStats();
   if (type === 'pageview') {
-    const key = todayKey();
-    stats.dailyViews[key] = (stats.dailyViews[key] || 0) + 1;
-  } else if (type === 'click' && category && name) {
-    const key = `${category} — ${name}`;
+    const d = todayKey();
+    stats.dailyViews[d] = (stats.dailyViews[d] || 0) + 1;
+  } else if (type === 'click' && key) {
     stats.linkClicks[key] = (stats.linkClicks[key] || 0) + 1;
   } else {
     return res.status(400).json({ error: 'Invalid tracking payload' });
@@ -69,51 +63,79 @@ app.post('/api/track', (req, res) => {
   res.json({ ok: true });
 });
 
-function requirePassword(req, res, next) {
-  const pw = req.headers['x-edit-password'];
-  if (pw !== EDIT_PASSWORD) {
-    return res.status(401).json({ error: 'Incorrect edit password' });
+// --- Protected: stats ---
+app.get('/api/stats', requirePassword, (req, res) => res.json(readStats()));
+
+// --- Protected: add / delete links ---
+function getList(data, categoryId, docType) {
+  if (FLAT_CATEGORIES.includes(categoryId)) {
+    if (!data.items[categoryId]) data.items[categoryId] = [];
+    return data.items[categoryId];
   }
-  next();
+  if (!data.items[categoryId]) data.items[categoryId] = {};
+  if (!data.items[categoryId][docType]) data.items[categoryId][docType] = [];
+  return data.items[categoryId][docType];
 }
 
 app.post('/api/links', requirePassword, (req, res) => {
-  const { category, name, url } = req.body || {};
-  if (!category || !name || !url) {
-    return res.status(400).json({ error: 'category, name and url are all required' });
+  const { categoryId, docType, name, url } = req.body || {};
+  if (!categoryId || !name || !url) return res.status(400).json({ error: 'Missing fields' });
+  if (!FLAT_CATEGORIES.includes(categoryId) && !DOC_TYPES.includes(docType)) {
+    return res.status(400).json({ error: 'Missing or invalid docType' });
   }
   const data = readData();
-  if (!data[category]) data[category] = [];
-  data[category].push([name, url, new Date().toISOString()]);
+  const list = getList(data, categoryId, docType);
+  list.push([name, url, new Date().toISOString()]);
   writeData(data);
   res.json({ ok: true, data });
 });
 
 app.delete('/api/links', requirePassword, (req, res) => {
-  const { category, name } = req.body || {};
+  const { categoryId, docType, name, categoryLabel } = req.body || {};
   const data = readData();
-  if (data[category]) {
-    const removed = data[category].find(([n]) => n === name);
-    if (removed) {
-      const stats = readStats();
-      stats.deletedLinks.unshift({
-        category,
-        name: removed[0],
-        url: removed[1],
-        deletedAt: new Date().toISOString()
-      });
-      writeStats(stats);
-    }
-    data[category] = data[category].filter(([n]) => n !== name);
-    if (!data[category].length) delete data[category];
+  const list = getList(data, categoryId, docType);
+  const removed = list.find(([n]) => n === name);
+  if (removed) {
+    const stats = readStats();
+    stats.deletedLinks.unshift({
+      categoryId, categoryLabel: categoryLabel || categoryId, docType: docType || null,
+      name: removed[0], url: removed[1], deletedAt: new Date().toISOString()
+    });
+    writeStats(stats);
+    const idx = list.indexOf(removed);
+    list.splice(idx, 1);
   }
   writeData(data);
   res.json({ ok: true, data });
 });
 
-// Only people with the edit password can see usage stats.
-app.get('/api/stats', requirePassword, (req, res) => {
-  res.json(readStats());
+// --- Protected: reordering ---
+app.post('/api/reorder', requirePassword, (req, res) => {
+  const { scope, categoryId, docType, order } = req.body || {};
+  if (!Array.isArray(order)) return res.status(400).json({ error: 'order must be an array' });
+  const data = readData();
+
+  if (scope === 'category') {
+    data.categoryOrder = order;
+  } else if (scope === 'docType') {
+    if (!data.docTypeOrder) data.docTypeOrder = {};
+    data.docTypeOrder[categoryId] = order;
+  } else if (scope === 'item') {
+    const list = getList(data, categoryId, docType);
+    const byName = Object.fromEntries(list.map(entry => [entry[0], entry]));
+    const reordered = order.map(name => byName[name]).filter(Boolean);
+    // keep any entries not mentioned (safety net) at the end
+    list.forEach(entry => { if (!order.includes(entry[0])) reordered.push(entry); });
+    if (FLAT_CATEGORIES.includes(categoryId)) {
+      data.items[categoryId] = reordered;
+    } else {
+      data.items[categoryId][docType] = reordered;
+    }
+  } else {
+    return res.status(400).json({ error: 'Invalid scope' });
+  }
+  writeData(data);
+  res.json({ ok: true, data });
 });
 
 const PORT = process.env.PORT || 3000;

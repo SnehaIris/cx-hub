@@ -1,57 +1,63 @@
-# CX Hub — deploy on Render
+# CX Hub v2 — deploy on Render
 
-This is a small standalone app: one page listing your Tools, Forms & Trackers,
-and Guides & SOPs, with search and an "Add link" button. Anyone with the URL
-can view it; only people who know the **edit password** can add or remove links.
+This is the upgraded CX Hub: a categorized directory of CX tools, forms,
+trackers, SOPs and guides, with a landing page (Common Tools / DSA / CC &
+borrow / DCA), search, drag-to-reorder, an Activity Center, and a Removed
+Links archive — all password-gated for editing.
 
 ## What's in this folder
-- `server.js` — the backend (serves the page + a small API)
+- `server.js` — the backend (serves the page + the API)
 - `public/index.html` — the page people see
-- `data.json` — the starting list of links (this file gets updated automatically as people add/remove links)
+- `data.json` — the starting set of links, already sorted into categories and doc types (this file updates automatically as people add/remove/reorder links)
 - `package.json` — tells Render what to install and how to start the app
 
 ## Step 1 — Put this on GitHub
-1. Go to [github.com](https://github.com) and sign in (or create a free account).
-2. Click **New repository**. Name it something like `cx-hub`. Leave it **empty** (don't check "Add a README").
-3. Click **Create repository**.
-4. On the next page, click **uploading an existing file**.
-5. Drag in every file from this folder (keep the `public` folder structure — drag the whole `public` folder in too).
-6. Click **Commit changes**.
+You can either start a brand-new repo, or replace the contents of your
+existing `cx-hub` repo with these files (recommended, since Render is
+already connected to it).
+
+**To replace your existing repo's files:**
+1. Go to your repo on github.com.
+2. Delete the old files one at a time (click the file → trash icon → commit), or just upload the new ones with the same names to overwrite them (`server.js`, `package.json`, `data.json`, `public/index.html` will all overwrite cleanly since the names match).
+3. Click "Add file" → "Upload files", then drag in `server.js`, `package.json`, `data.json`, and the whole `public` folder (containing the new `index.html`) from this project.
+4. Commit the changes.
+
+**To start fresh instead:** follow the same GitHub steps as last time (new empty repo → Upload files → drag in everything from this folder, keeping the `public` folder structure).
 
 ## Step 2 — Deploy on Render
-1. Go to [render.com](https://render.com) and sign up (you can sign in with your GitHub account — this makes the next step easier).
-2. Click **New +** → **Web Service**.
-3. Connect the `cx-hub` repository you just created.
-4. Fill in:
-   - **Name**: `cx-hub` (or whatever you like — this becomes part of your URL)
+If you're reusing your existing Render service, you don't need to redo any
+setup — just trigger **Manual Deploy → Deploy latest commit** after your
+GitHub commit lands, and it'll pick up the new code automatically.
+
+If you're setting up fresh:
+1. Go to [render.com](https://render.com) and sign in.
+2. **New +** → **Web Service** → connect your repo.
+3. Fill in:
+   - **Root Directory**: leave blank (files should be at the top of the repo)
    - **Runtime**: Node
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-   - **Instance Type**: Free
-5. Before clicking **Create Web Service**, scroll to **Environment Variables** and add one:
+4. Under **Environment Variables**, add:
    - **Key**: `EDIT_PASSWORD`
-   - **Value**: a password of your choice — this is what you'll share with people you want to allow to edit
-6. Click **Create Web Service**. Render will build and deploy — this takes a couple of minutes the first time.
-7. Once it's live, Render gives you a URL like `https://cx-hub.onrender.com` — that's your CX Hub. Share this in Slack.
+   - **Value**: a password of your choice
+5. Click **Create Web Service** and wait for it to go live.
 
-## How editing works
-- Anyone who opens the link can view and search.
-- At the bottom of the page there's a **"🔒 Enable edit access"** link. Clicking it asks for a password.
-- Only people who type the correct `EDIT_PASSWORD` see the "+ Add link" button and the ✕ remove buttons.
-- Share the password only with people you want to be able to edit. To revoke someone's access, change `EDIT_PASSWORD` in Render's environment variables (under your service → **Environment**) and re-share the new password with the people you still want to have it.
+## What's new in this version
+- **New navigation**: landing page shows Common Tools, DSA, CC & borrow, DCA. Opening DSA/CC & borrow/DCA shows Forms, Trackers & Response Sheets, SOP's, and Doc's & Guides as tabs, with a search bar that searches across all four at once.
+- **Drag-to-reorder** (editor mode only): reorder the top-level categories, the doc-type tabs within a category, and the items within a list — just drag the ⠿ handle. Changes save immediately.
+- **Add Link**: open the category/doc-type you want, tap **+ Add link**, and it's added right there.
+- **Inline open counts**: once edit access is unlocked, every link shows how many times it's been opened, right next to its ✕ delete button.
+- **📊 Activity Center**: total page views, total link opens, a 14-day views chart, a full per-link open-count list, and a CSV export of all of it.
+- **🗑️ Removed links**: a running archive of everything that's ever been deleted, with name, URL, category, doc type, and removal date.
+
+All of this is gated behind the same `EDIT_PASSWORD` as before — regular
+viewers only ever see the read-only hub.
 
 ## Important limitations to know about (free tier)
-- **Spin-down delay**: Render's free tier "sleeps" the app after 15 minutes of no traffic. The first visit after a quiet period can take 30–50 seconds to load while it wakes up. This is normal on the free plan.
-- **Data resets on redeploy**: Links added through the app are saved to `data.json` on Render's server, but if you push a code update (redeploy), that file resets back to whatever is in your GitHub repo. For a small internal tool with infrequent updates this is usually fine, but it's worth knowing.
-  - If this becomes a problem, the fix is to add a **Render persistent disk** (a small paid add-on, roughly $1/month) mounted at, say, `/data`, and set the `DATA_FILE` environment variable to `/data/data.json`. The app already reads this from an environment variable, so no code changes are needed — just add the disk and the env var in Render's dashboard.
-
-## Activity Center (usage stats)
-Once edit access is unlocked (same password as adding links), a second button
-appears — **📊 Activity** — showing total page views, total link clicks, a
-14-day views chart, and the most-clicked links. Regular viewers never see this
-button or its data. Stats are stored in `stats.json` on the server (separate
-from your links data), and reset if the server's disk is wiped — same
-persistence caveat as `data.json` above.
+- **Spin-down delay**: Render's free tier sleeps the app after 15 minutes of inactivity. The first visit after a quiet period can take 30–50 seconds to wake up.
+- **Data resets on redeploy**: `data.json` and `stats.json` live on Render's server and update as people use the app, but a code redeploy resets them back to whatever's in your GitHub repo. If this becomes a problem, add a **Render persistent disk** (~$1/month) mounted at e.g. `/data`, and set the `DATA_FILE` and `STATS_FILE` environment variables to point there (`/data/data.json`, `/data/stats.json`) — no code changes needed, the app already reads these paths from environment variables.
 
 ## Making changes later
-Any time you want to change the code (design, features, etc.), update the files in your GitHub repo — Render automatically redeploys when it sees new changes pushed to the connected branch.
+Update the files in your GitHub repo — Render redeploys automatically
+when it sees new commits on the connected branch (or trigger Manual Deploy
+if auto-deploy doesn't fire).

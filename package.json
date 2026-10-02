@@ -1,8 +1,8 @@
 {
   "name": "cx-hub",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "CX Hub - a searchable directory of CX tools, forms and guides",
+  "description": "CX Hub - categorized directory of CX tools, forms, trackers, SOPs and guides",
   "scripts": {
     "start": "node server.js"
   },
