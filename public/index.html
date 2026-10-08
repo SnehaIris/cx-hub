@@ -267,7 +267,7 @@ function wireItemRows(categoryId, docType) {
   mainEl.querySelectorAll('.del-btn').forEach(btn => {
     btn.addEventListener('click', () => removeLink(btn.dataset.cat, btn.dataset.doctype || null, btn.dataset.name));
   });
-  if (editorMode && docType !== undefined) {
+  if (editorMode) {
     mainEl.querySelectorAll('.item-row[draggable="true"]').forEach(row => {
       row.addEventListener('dragstart', () => { dragSrc = row.dataset.name; row.classList.add('dragging'); });
       row.addEventListener('dragend', () => row.classList.remove('dragging'));
@@ -311,7 +311,7 @@ function renderCategory(catId) {
       <input id="cat-search" type="text" placeholder="Search ${escapeHtml(meta.label)}…" value="${catSearch.replace(/"/g,'&quot;')}">
       <div class="item-list">${listHtml}</div>`;
     document.getElementById('cat-search').addEventListener('input', (e) => { catSearch = e.target.value; renderCurrentList(); });
-    wireItemRows(catId, undefined);
+    wireItemRows(catId, null);
     return;
   }
 
@@ -496,14 +496,19 @@ async function openActivityCenter() {
   if (!stats) return;
   const totalViews = Object.values(stats.dailyViews || {}).reduce((a, b) => a + b, 0);
   const totalClicks = Object.values(stats.linkClicks || {}).reduce((a, b) => a + b, 0);
+  const todayViews = (stats.dailyViews || {})[new Date().toISOString().slice(0, 10)] || 0;
   document.getElementById('activity-summary').innerHTML = `
     <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
       <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${totalViews}</div>
-      <div style="font-size:0.78rem; color:var(--text-muted)">Total page views</div>
+      <div style="font-size:0.78rem; color:var(--text-muted)">Total views so far</div>
+    </div>
+    <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
+      <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${todayViews}</div>
+      <div style="font-size:0.78rem; color:var(--text-muted)">Views today</div>
     </div>
     <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
       <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${totalClicks}</div>
-      <div style="font-size:0.78rem; color:var(--text-muted)">Total link clicks</div>
+      <div style="font-size:0.78rem; color:var(--text-muted)">Total link opens</div>
     </div>`;
 
   const days = [];
@@ -528,7 +533,9 @@ async function openActivityCenter() {
 
 function csvEscape(v) { const s = String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }
 function downloadCsv(filename, text) {
-  const blob = new Blob([text], { type: 'text/csv' });
+  // Prepend a UTF-8 BOM so Excel reads the special characters (—, ', etc.) correctly
+  // instead of flagging the file as corrupted/needing repair.
+  const blob = new Blob(['\uFEFF' + text], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = filename;
