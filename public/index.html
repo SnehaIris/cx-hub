@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CX Hub</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="/vendor/chartjs/chart.umd.js"></script>
 <style>
   :root {
     --bg: #f3edfb; --card-bg: #ffffff; --text: #251b3d; --text-muted: #7a6f96;
@@ -78,6 +78,16 @@
     background: var(--card-bg); color: var(--text); }
   .btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
   .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 10px; }
+  .storage-banner { display: none; margin-top: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.8rem;
+    background: #fff4e5; color: #8a4b00; border: 1px solid #f3c98b; }
+  .storage-banner.error { background: #fdecec; color: #9b1c1c; border-color: #f2b8b5; }
+  .stat-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+  @media (min-width: 520px) { .stat-cards { grid-template-columns: repeat(4, 1fr); } }
+  .stat-card { text-align: center; padding: 14px 8px; background: var(--accent-soft); border-radius: 10px; }
+  .stat-card .num { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+  .stat-card .lbl { font-size: 0.75rem; color: var(--text-muted); }
+  .chart-scroll { overflow-x: auto; }
+  .chart-box { position: relative; height: 220px; }
 </style>
 </head>
 <body>
@@ -87,7 +97,9 @@
     <button class="editor-toggle" id="editor-toggle">🔒 Viewer mode</button>
   </div>
   <button class="back-btn" id="back-btn" style="display:none">← All categories</button>
+  <div class="storage-banner" id="storage-banner"></div>
 </header>
+<iframe name="dl-frame" id="dl-frame" style="display:none"></iframe>
 <main id="main"></main>
 
 <button class="fab fab-pos-top" id="add-link-btn" style="display:none">+ Add link</button>
@@ -117,8 +129,9 @@
   <div class="modal" style="max-width:600px">
     <h2>📊 Activity Center</h2>
     <div class="hint" style="margin-bottom:14px">Visible only to you and anyone with edit access.</div>
-    <div id="activity-summary" style="display:flex; gap:16px; margin-bottom:18px;"></div>
-    <canvas id="views-chart" height="140"></canvas>
+    <div id="activity-summary" class="stat-cards"></div>
+    <div class="hint" style="font-weight:600; color:var(--text); margin-bottom:6px" id="chart-title">Daily usage</div>
+    <div class="chart-scroll"><div class="chart-box" id="chart-box"><canvas id="views-chart"></canvas></div></div>
     <div class="hint" style="margin-top:20px; font-weight:600; color:var(--text)">Link open counts</div>
     <div id="top-links" style="max-height:220px; overflow-y:auto;"></div>
     <div class="modal-actions">
@@ -159,7 +172,8 @@ let view = 'home';
 let selectedDocType = null;
 let catSearch = '';
 let linkCounts = {};
-let dragSrc = null; // generic drag source index
+let dragSrc = null; // drag source index for categories / tabs
+let dragItem = null; // drag source for links: { idx, name }
 
 const mainEl = document.getElementById('main');
 const pageTitle = document.getElementById('page-title');
@@ -243,16 +257,17 @@ function renderHome() {
   });
 }
 
-function itemRowHtml(categoryId, docType, name, url, chip) {
+function itemRowHtml(categoryId, docType, name, url, chip, idx) {
   const key = trackKey(categoryId, docType, name);
   const count = linkCounts[key] || 0;
-  return `<div class="item-row" draggable="${editorMode && !chip}" data-name="${escapeHtml(name)}">
-    ${editorMode && !chip ? `<span class="drag-handle">⠿</span>` : ''}
+  const canDrag = editorMode && !chip && !catSearch.trim(); // no reordering on a filtered list
+  return `<div class="item-row" draggable="${canDrag}" data-name="${escapeHtml(name)}" data-idx="${idx}">
+    ${canDrag ? `<span class="drag-handle">⠿</span>` : ''}
     <a class="name" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"
        data-cat="${categoryId}" data-doctype="${docType || ''}" data-name="${escapeHtml(name)}">${escapeHtml(name)}</a>
     ${chip ? `<span class="product-chip">${escapeHtml(chip)}</span>` : ''}
     ${editorMode ? `<span class="count-badge" title="Times opened">${count}</span>` : ''}
-    ${editorMode ? `<button class="del-btn" data-cat="${categoryId}" data-doctype="${docType || ''}" data-name="${escapeHtml(name)}">✕</button>` : ''}
+    ${editorMode ? `<button class="del-btn" data-cat="${categoryId}" data-doctype="${docType || ''}" data-name="${escapeHtml(name)}" data-url="${escapeHtml(url)}" data-idx="${idx}">✕</button>` : ''}
   </div>`;
 }
 
@@ -265,28 +280,37 @@ function wireItemRows(categoryId, docType) {
     });
   });
   mainEl.querySelectorAll('.del-btn').forEach(btn => {
-    btn.addEventListener('click', () => removeLink(btn.dataset.cat, btn.dataset.doctype || null, btn.dataset.name));
+    btn.addEventListener('click', () => removeLink(btn.dataset.cat, btn.dataset.doctype || null, +btn.dataset.idx, btn.dataset.name, btn.dataset.url));
   });
   if (editorMode) {
     mainEl.querySelectorAll('.item-row[draggable="true"]').forEach(row => {
-      row.addEventListener('dragstart', () => { dragSrc = row.dataset.name; row.classList.add('dragging'); });
+      row.addEventListener('dragstart', () => { dragItem = { idx: +row.dataset.idx, name: row.dataset.name }; row.classList.add('dragging'); });
       row.addEventListener('dragend', () => row.classList.remove('dragging'));
       row.addEventListener('dragover', (e) => e.preventDefault());
       row.addEventListener('drop', async (e) => {
         e.preventDefault();
-        if (dragSrc === null) return;
-        const rows = [...mainEl.querySelectorAll('.item-row[draggable="true"]')];
-        const order = rows.map(r => r.dataset.name);
-        const srcIdx = order.indexOf(dragSrc);
-        const destIdx = order.indexOf(row.dataset.name);
-        if (srcIdx === destIdx) return;
-        order.splice(destIdx, 0, order.splice(srcIdx, 1)[0]);
-        dragSrc = null;
-        await reorder('item', { categoryId, docType, order });
+        if (!dragItem) return;
+        const from = dragItem.idx, to = +row.dataset.idx, name = dragItem.name;
+        dragItem = null;
+        if (from === to) return;
+        await reorder('item', { categoryId, docType, from, to, name });
         renderCurrentList();
       });
     });
   }
+}
+
+// Re-rendering the list rebuilds the search box, so put the cursor back where the user was typing.
+function wireSearch() {
+  const input = document.getElementById('cat-search');
+  input.addEventListener('input', (e) => {
+    const pos = e.target.selectionStart;
+    catSearch = e.target.value;
+    renderCurrentList();
+    const fresh = document.getElementById('cat-search');
+    fresh.focus();
+    try { fresh.setSelectionRange(pos, pos); } catch (_) {}
+  });
 }
 
 let lastRenderedCatId = null;
@@ -302,15 +326,15 @@ function renderCategory(catId) {
   const searching = q.length > 0;
 
   if (meta.flat) {
-    const items = getList(catId, null);
+    const items = getList(catId, null).map(([name, url], i) => [name, url, i]);
     const filtered = searching ? items.filter(([name]) => name.toLowerCase().includes(q)) : items;
     const listHtml = filtered.length
-      ? filtered.map(([name, url]) => itemRowHtml(catId, null, name, url, null)).join('')
-      : `<div class="empty">${searching ? `No matches for "${q}".` : 'No links added here yet.'}</div>`;
+      ? filtered.map(([name, url, i]) => itemRowHtml(catId, null, name, url, null, i)).join('')
+      : `<div class="empty">${searching ? `No matches for "${escapeHtml(q)}".` : 'No links added here yet.'}</div>`;
     mainEl.innerHTML = `
-      <input id="cat-search" type="text" placeholder="Search ${escapeHtml(meta.label)}…" value="${catSearch.replace(/"/g,'&quot;')}">
+      <input id="cat-search" type="text" placeholder="Search ${escapeHtml(meta.label)}…" value="${escapeHtml(catSearch)}">
       <div class="item-list">${listHtml}</div>`;
-    document.getElementById('cat-search').addEventListener('input', (e) => { catSearch = e.target.value; renderCurrentList(); });
+    wireSearch();
     wireItemRows(catId, null);
     return;
   }
@@ -326,25 +350,25 @@ function renderCategory(catId) {
   let listHtml;
   if (searching) {
     const results = [];
-    docTypes.forEach(dt => getList(catId, dt).forEach(([name, url]) => {
-      if (name.toLowerCase().includes(q)) results.push([name, url, dt]);
+    docTypes.forEach(dt => getList(catId, dt).forEach(([name, url], i) => {
+      if (name.toLowerCase().includes(q)) results.push([name, url, dt, i]);
     }));
     listHtml = results.length
-      ? results.map(([name, url, dt]) => itemRowHtml(catId, dt, name, url, dt)).join('')
-      : `<div class="empty">No matches for "${q}" across Forms, Trackers & Response Sheets, SOP's, or Doc's & Guides.</div>`;
+      ? results.map(([name, url, dt, i]) => itemRowHtml(catId, dt, name, url, dt, i)).join('')
+      : `<div class="empty">No matches for "${escapeHtml(q)}" across Forms, Trackers & Response Sheets, SOP's, or Doc's & Guides.</div>`;
   } else {
     const items = getList(catId, selectedDocType);
     listHtml = items.length
-      ? items.map(([name, url]) => itemRowHtml(catId, selectedDocType, name, url, null)).join('')
+      ? items.map(([name, url], i) => itemRowHtml(catId, selectedDocType, name, url, null, i)).join('')
       : `<div class="empty">No links added here yet.</div>`;
   }
 
   mainEl.innerHTML = `
-    <input id="cat-search" type="text" placeholder="Search Forms, Trackers, SOP's, Guides…" value="${catSearch.replace(/"/g,'&quot;')}">
+    <input id="cat-search" type="text" placeholder="Search Forms, Trackers, SOP's, Guides…" value="${escapeHtml(catSearch)}">
     <div class="product-tabs">${tabs}</div>
     <div class="item-list">${listHtml}</div>`;
 
-  document.getElementById('cat-search').addEventListener('input', (e) => { catSearch = e.target.value; renderCurrentList(); });
+  wireSearch();
 
   mainEl.querySelectorAll('.product-tab').forEach(tab => {
     tab.addEventListener('click', (e) => {
@@ -380,24 +404,33 @@ function render() {
 }
 
 // ---------- Edit actions ----------
-async function reorder(scope, payload) {
-  await fetch('/api/reorder', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword },
-    body: JSON.stringify({ scope, ...payload })
-  });
-  await loadData();
+// Sends an edit to the server. Shows a message if it fails instead of silently pretending it saved.
+async function editApi(method, url, body) {
+  let res, result = {};
+  try {
+    res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword || '' },
+      body: JSON.stringify(body)
+    });
+    try { result = await res.json(); } catch (_) {}
+  } catch (err) {
+    alert('Could not reach the server — check your connection and try again.');
+    return null;
+  }
+  if (res.status === 401) { handleAuthExpired(); return null; }
+  if (result.data) DATA = result.data;
+  if (!res.ok) { alert(result.error || `Something went wrong (error ${res.status}).`); refreshStorageBanner(); }
+  return result;
 }
 
-async function removeLink(categoryId, docType, name) {
-  const res = await fetch('/api/links', {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword },
-    body: JSON.stringify({ categoryId, docType, name, categoryLabel: CATEGORY_META[categoryId].label })
-  });
-  if (res.status === 401) return handleAuthExpired();
-  const result = await res.json();
-  DATA = result.data ? { ...DATA, items: result.data.items } : DATA;
+async function reorder(scope, payload) {
+  const result = await editApi('POST', '/api/reorder', { scope, ...payload });
+  if (!result || !result.data) await loadData();
+}
+
+async function removeLink(categoryId, docType, index, name, url) {
+  await editApi('DELETE', '/api/links', { categoryId, docType, index, name, url, categoryLabel: CATEGORY_META[categoryId].label });
   renderCurrentList();
 }
 
@@ -416,6 +449,25 @@ function updateEditUI() {
   removedBtn.style.display = editorMode ? 'block' : 'none';
   editorToggle.textContent = editorMode ? '🔓 Editor mode' : '🔒 Viewer mode';
   editorToggle.classList.toggle('on', editorMode);
+  refreshStorageBanner();
+}
+
+// Tells editors if changes are not being saved permanently.
+async function refreshStorageBanner() {
+  const banner = document.getElementById('storage-banner');
+  if (!editorMode || !editPassword) { banner.style.display = 'none'; return; }
+  try {
+    const res = await fetch('/api/storage-status', { headers: { 'x-edit-password': editPassword } });
+    if (!res.ok) { banner.style.display = 'none'; return; }
+    const s = await res.json();
+    let msg = '', isError = false;
+    if (s.readOnly) { msg = '⚠️ Editing is paused: the hub could not load its saved data (' + (s.lastError || 'unknown error') + '). Check GIST_ID / GITHUB_TOKEN on Render.'; isError = true; }
+    else if (s.lastError) { msg = '⚠️ Recent changes are not saved permanently yet — retrying. (' + s.lastError + ')'; isError = true; }
+    else if (s.mode !== 'gist') { msg = '⚠️ Permanent storage is not set up. Changes and stats will be lost when the server restarts or redeploys. See README → "Permanent storage".'; }
+    banner.textContent = msg;
+    banner.classList.toggle('error', isError);
+    banner.style.display = msg ? 'block' : 'none';
+  } catch (_) { banner.style.display = 'none'; }
 }
 
 editorToggle.addEventListener('click', async () => {
@@ -472,14 +524,8 @@ async function saveLink() {
   if (!name || !url) { hint.textContent = 'Please fill in name and link.'; return; }
   if (!/^https?:\/\//i.test(url)) { hint.textContent = 'Link should start with http:// or https://'; return; }
 
-  const res = await fetch('/api/links', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-edit-password': editPassword },
-    body: JSON.stringify({ categoryId, docType, name, url })
-  });
-  if (res.status === 401) { closeAddModal(); return handleAuthExpired(); }
-  const result = await res.json();
-  DATA.items = result.data.items;
+  const result = await editApi('POST', '/api/links', { categoryId, docType, name, url });
+  if (!result) return;
   closeAddModal();
   renderCurrentList();
 }
@@ -491,67 +537,88 @@ async function fetchStats() {
   return res.json();
 }
 
+function dayLabel(key) {
+  return new Date(key + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+}
+// Every day from the first recorded day up to today (days with no activity show as 0)
+function allDayKeys(stats) {
+  const keys = [...Object.keys(stats.dailyViews || {}), ...Object.keys(stats.dailyClicks || {})].sort();
+  const today = stats.today;
+  const days = [];
+  const d = new Date((keys[0] && keys[0] < today ? keys[0] : today) + 'T00:00:00Z');
+  const end = new Date(today + 'T00:00:00Z');
+  while (d <= end) { days.push(d.toISOString().slice(0, 10)); d.setUTCDate(d.getUTCDate() + 1); }
+  return days;
+}
+function sum(obj) { return Object.values(obj || {}).reduce((a, b) => a + b, 0); }
+
 async function openActivityCenter() {
   const stats = await fetchStats();
   if (!stats) return;
-  const totalViews = Object.values(stats.dailyViews || {}).reduce((a, b) => a + b, 0);
-  const totalClicks = Object.values(stats.linkClicks || {}).reduce((a, b) => a + b, 0);
-  const todayViews = (stats.dailyViews || {})[new Date().toISOString().slice(0, 10)] || 0;
-  document.getElementById('activity-summary').innerHTML = `
-    <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
-      <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${totalViews}</div>
-      <div style="font-size:0.78rem; color:var(--text-muted)">Total views so far</div>
-    </div>
-    <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
-      <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${todayViews}</div>
-      <div style="font-size:0.78rem; color:var(--text-muted)">Views today</div>
-    </div>
-    <div style="flex:1; text-align:center; padding:14px; background:var(--accent-soft); border-radius:10px;">
-      <div style="font-size:1.6rem; font-weight:700; color:var(--accent)">${totalClicks}</div>
-      <div style="font-size:0.78rem; color:var(--text-muted)">Total link opens</div>
-    </div>`;
+  const views = stats.dailyViews || {};
+  const clicks = stats.dailyClicks || {};
+  const card = (num, lbl) => `<div class="stat-card"><div class="num">${num}</div><div class="lbl">${lbl}</div></div>`;
+  document.getElementById('activity-summary').innerHTML =
+    card(sum(views), 'Total views so far') +
+    card(views[stats.today] || 0, 'Views today') +
+    card(sum(stats.linkClicks), 'Total link opens') +
+    card(clicks[stats.today] || 0, 'Link opens today');
 
-  const days = [];
-  for (let i = 13; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days.push(d.toISOString().slice(0, 10)); }
-  const viewCounts = days.map(d => (stats.dailyViews || {})[d] || 0);
-  const labels = days.map(d => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
-  const ctx = document.getElementById('views-chart').getContext('2d');
-  if (viewsChart) viewsChart.destroy();
-  viewsChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Page views', data: viewCounts, backgroundColor: '#7c5cfc' }] },
-    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });
+  const days = allDayKeys(stats);
+  document.getElementById('chart-title').textContent =
+    `Daily usage — ${days.length} day${days.length === 1 ? '' : 's'} since tracking started (${dayLabel(days[0])})`;
+  // Wide enough that every day keeps a readable bar; scrolls sideways when there are many days.
+  document.getElementById('chart-box').style.minWidth = Math.max(days.length * 26, 300) + 'px';
+
+  activityOverlay.classList.add('open');
+
+  const box = document.getElementById('chart-box');
+  if (typeof Chart === 'undefined') {
+    box.innerHTML = '<div class="hint">Chart could not load. The numbers above and the CSV export still work.</div>';
+  } else {
+    if (!document.getElementById('views-chart')) box.innerHTML = '<canvas id="views-chart"></canvas>';
+    if (viewsChart) viewsChart.destroy();
+    viewsChart = new Chart(document.getElementById('views-chart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: days.map(dayLabel),
+        datasets: [
+          { label: 'Page views', data: days.map(d => views[d] || 0), backgroundColor: '#7c5cfc' },
+          { label: 'Link opens', data: days.map(d => clicks[d] || 0), backgroundColor: '#c4b2ff' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: true, position: 'bottom' } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+      }
+    });
+    const scroller = box.parentElement;
+    scroller.scrollLeft = scroller.scrollWidth; // start at the most recent days
+  }
 
   const topLinks = Object.entries(stats.linkClicks || {}).sort((a, b) => b[1] - a[1]);
   document.getElementById('top-links').innerHTML = topLinks.length
     ? topLinks.map(([key, count]) => `
-        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:0.85rem;">
-          <span>${escapeHtml(key)}</span><span style="color:var(--accent); font-weight:600">${count} open${count === 1 ? '' : 's'}</span>
+        <div style="display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); font-size:0.85rem;">
+          <span>${escapeHtml(key)}</span><span style="color:var(--accent); font-weight:600; white-space:nowrap">${count} open${count === 1 ? '' : 's'}</span>
         </div>`).join('')
     : `<div class="hint">No clicks recorded yet.</div>`;
-
-  activityOverlay.classList.add('open');
 }
 
-function csvEscape(v) { const s = String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }
-function downloadCsv(filename, text) {
-  // Prepend a UTF-8 BOM so Excel reads the special characters (—, ', etc.) correctly
-  // instead of flagging the file as corrupted/needing repair.
-  const blob = new Blob(['\uFEFF' + text], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-async function exportActivityCsv() {
-  const stats = await fetchStats();
-  if (!stats) return;
-  let csv = 'Daily page views\nDate,Views\n';
-  Object.entries(stats.dailyViews || {}).sort(([a],[b]) => a.localeCompare(b)).forEach(([d,c]) => csv += `${d},${c}\n`);
-  csv += '\nLink open counts\nLink,Opens\n';
-  Object.entries(stats.linkClicks || {}).sort((a,b) => b[1]-a[1]).forEach(([k,c]) => csv += `${csvEscape(k)},${c}\n`);
-  csv += '\nRemoved links\nCategory,Doc Type,Name,URL,Removed At\n';
-  (stats.deletedLinks || []).forEach(d => csv += `${csvEscape(d.categoryLabel)},${csvEscape(d.docType||'')},${csvEscape(d.name)},${csvEscape(d.url)},${d.deletedAt}\n`);
-  downloadCsv(`cx-hub-activity-${new Date().toISOString().slice(0,10)}.csv`, csv);
+// The server builds the CSV and the browser downloads it as a normal file.
+function exportActivityCsv() {
+  if (!editPassword) return handleAuthExpired();
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '/api/export';
+  form.target = 'dl-frame';
+  const input = document.createElement('input');
+  input.type = 'hidden'; input.name = 'password'; input.value = editPassword;
+  form.appendChild(input);
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
 }
 
 async function openRemovedLinks() {
