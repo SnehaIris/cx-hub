@@ -55,7 +55,17 @@ viewers only ever see the read-only hub.
 
 ## Important limitations to know about (free tier)
 - **Spin-down delay**: Render's free tier sleeps the app after 15 minutes of inactivity. The first visit after a quiet period can take 30–50 seconds to wake up.
-- **Data resets on redeploy**: `data.json` and `stats.json` live on Render's server and update as people use the app, but a code redeploy resets them back to whatever's in your GitHub repo. If this becomes a problem, add a **Render persistent disk** (~$1/month) mounted at e.g. `/data`, and set the `DATA_FILE` and `STATS_FILE` environment variables to point there (`/data/data.json`, `/data/stats.json`) — no code changes needed, the app already reads these paths from environment variables.
+- **Data resets on restart, not just redeploy**: `data.json` and `stats.json` live on Render's server and update as people use the app, but Render's free tier wipes local files every time the service restarts — and it restarts automatically whenever it spins down from 15 minutes of inactivity and then wakes back up. In practice this means added/removed links and usage stats can silently revert to whatever's in your GitHub repo, even without you redeploying anything.
+
+  **The fix — add a persistent disk (~$1/month):**
+  1. On your Render service page, go to the **Disks** tab (or **Settings** → scroll to Disks, depending on Render's current layout).
+  2. Click **Add Disk**. Give it a name (e.g. `cx-hub-data`), a size (1 GB is plenty), and a **Mount Path** of `/data`.
+  3. Save — Render will redeploy your service with the disk attached.
+  4. Go to **Environment** and add two variables:
+     - `DATA_FILE` = `/data/data.json`
+     - `STATS_FILE` = `/data/stats.json`
+  5. Redeploy once more (Manual Deploy → Deploy latest commit). The app already reads these paths from environment variables, so no code changes are needed.
+  6. The very first time this runs, `/data/data.json` won't exist yet, so the app starts empty — re-add your links once through the Add Link button, or upload a `data.json` copy there if Render's disk browser allows it. After that, everything persists properly across restarts.
 
 ## Making changes later
 Update the files in your GitHub repo — Render redeploys automatically

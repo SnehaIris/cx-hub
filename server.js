@@ -8,6 +8,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const DATA_FILE = process.env.DATA_FILE || path.join(__dirname, 'data.json');
 const STATS_FILE = process.env.STATS_FILE || path.join(__dirname, 'stats.json');
+const BUNDLED_SEED_FILE = path.join(__dirname, 'data.json');
+
+// If DATA_FILE points somewhere else (e.g. a persistent disk) and nothing lives
+// there yet, seed it from the repo's bundled data.json so a freshly-attached
+// disk doesn't start empty and wipe out all the real links.
+function seedDataFileIfNeeded() {
+  if (DATA_FILE === BUNDLED_SEED_FILE) return; // same file, nothing to seed
+  if (fs.existsSync(DATA_FILE)) return; // already has data, don't overwrite
+  try {
+    fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
+    if (fs.existsSync(BUNDLED_SEED_FILE)) {
+      fs.copyFileSync(BUNDLED_SEED_FILE, DATA_FILE);
+      console.log(`Seeded ${DATA_FILE} from bundled data.json`);
+    }
+  } catch (err) {
+    console.error('Could not seed DATA_FILE:', err.message);
+  }
+}
+seedDataFileIfNeeded();
 const EDIT_PASSWORD = process.env.EDIT_PASSWORD || 'changeme';
 
 const DOC_TYPES = ['Forms', 'Trackers & Response Sheets', "SOP's", "Doc's & Guides"];
@@ -20,6 +39,7 @@ function readData() {
   return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
 }
 function writeData(data) {
+  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
@@ -30,6 +50,7 @@ function readStats() {
   return stats;
 }
 function writeStats(stats) {
+  fs.mkdirSync(path.dirname(STATS_FILE), { recursive: true });
   fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2));
 }
 function todayKey() { return new Date().toISOString().slice(0, 10); }
